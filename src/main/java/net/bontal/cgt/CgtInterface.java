@@ -57,7 +57,6 @@
 package net.bontal.cgt;
 
 import java.util.*;
-import net.bontal.cgt.User;
 
 public class CgtInterface {
     public void run() {
@@ -86,28 +85,80 @@ public class CgtInterface {
         console.close();
     }
 
-    public void askUserDetails(User user, Scanner console) {
-        System.out.print("What's your name? [put your name hit enter] ");
+    private boolean isNotValidName(String name, boolean isElonMusksSon) {
+        /*
+         * Sir, You mentioned earlier in class with ancient headstone example
+         * we need to consider for the future.
+         * I'm letting numbers in name just in case.
+         */
+        if (isElonMusksSon)
+            return !name.matches("[a-zA-Z0-9 ]+");
+        else
+            return !name.matches("[a-zA-Z ]+");
+    }
 
-        String name = "";
-        name = console.nextLine(); // using Scanner.nextLine() to accept
-        /* space in Full Name, for example. "Natalia Galileo Oreo" */
+    private boolean isValidYesOrNo(String string) {
+        return (string.equalsIgnoreCase("y") || string.equalsIgnoreCase("yes") || string.equalsIgnoreCase("n")
+                || string.equalsIgnoreCase("no"));
+    }
+
+    public void askUserDetails(User user, Scanner console) {
+        boolean isElonMusksSon;
+
+        isElonMusksSon = false;
+        isElonMusksSon = true;
+
+        /* Get Name */
+        String name;
+        name = "";
+
+        do {
+            System.out.print("What's your name? [put your name hit enter] ");
+            name = console.nextLine(); // using Scanner.nextLine() to accept
+            /* space in Full Name, for example. "Natalia Galileo Oreo" */
+            /*
+             * also accepting numbers in name just in case Elon's Son wants to use this
+             * system.
+             */
+            if (isNotValidName(name, isElonMusksSon)) {
+                System.out.println("Please enter a valid name (letters only, no numbers or special characters).");
+            }
+
+        } while (isNotValidName(name, isElonMusksSon));
         user.setName(name);
 
+        /* Get Salary */
         int salary;
-        System.out.print("Your Annual Salary? [input number only] ");
-        salary = console.nextInt();
+
+        do {
+            System.out.print("Your Annual Salary? [input number only] ");
+            while (!console.hasNextInt()) {
+                System.out.println("Please enter a valid number.");
+                System.out.print("Your Annual Salary? [input number only] ");
+                console.next();
+            }
+            salary = console.nextInt();
+
+            if (salary <= 0) {
+                System.out.println("Please enter a positive number for salary. You dont have job? Skill Issue!");
+            }
+
+        } while (salary <= 0);
+
         user.setAnnualSalary(salary);
 
+        /* Get Residential Status */
         String inputResident;
-        System.out.print("Are you resident of Australia? [yes/no] ");
 
-        inputResident = console.next();
-        if (inputResident.equals("y") || inputResident.equals("yes")) {
-            user.setResident(true);
-        } else if (inputResident.equals("n") || inputResident.equals("no")) {
-            user.setResident(false);
-        }
+        do {
+            System.out.print("Are you resident of Australia? [yes/no] ");
+            inputResident = console.next();
+            if (isValidYesOrNo(inputResident)) {
+                user.setResident(inputResident.equalsIgnoreCase("y") || inputResident.equalsIgnoreCase("yes"));
+            } else {
+                System.out.println("Invalid input. Please enter 'yes', 'no', 'y', or 'n'.");
+            }
+        } while (!(isValidYesOrNo(inputResident)));
     }
 
     public void askIncome(User user, Scanner console) {
@@ -115,47 +166,91 @@ public class CgtInterface {
          * IRS is coming bro....
          * better hide ur money....
          */
+
+        /* Get Buying Price */
         int buyingPrice;
-        System.out.print("Buying price [type in positive number] : $");
-        buyingPrice = console.nextInt();
+        do {
+            System.out.print("Buying price [type in positive number] : $");
+            while (!console.hasNextInt()) {
+                System.out.println("Please enter a valid positive number.");
+                System.out.print("Buying price [type in positive number] : $");
+                console.next();
+            }
+            buyingPrice = console.nextInt();
+
+            if (buyingPrice <= 0) {
+                System.out.println("Please enter a valid positive number.");
+            }
+        } while (buyingPrice <= 0);
         user.setBuyingPrice(buyingPrice);
 
+        /* Get Selling Price */
         int sellingPrice;
-        System.out.print("Selling price [type in positive number] : $");
-        sellingPrice = console.nextInt();
+        do {
+            System.out.print("Selling price [type in positive number] : $");
+            while (!console.hasNextInt()) {
+                System.out.println("Please enter a valid positive number.");
+                System.out.print("Selling price [type in positive number] : $");
+                console.next();
+            }
+            sellingPrice = console.nextInt();
+            if (sellingPrice <= buyingPrice) {
+                /*
+                 * As PDF mentions
+                 * For this assignment, we are
+                 * assuming that the selling price is always more than buying price so this
+                 * should be checked as well, otherwise
+                 * an error message is shown and ask again for selling price.
+                 */
+                System.out.println("Please enter a value greater than Buying Price");
+            }
+        } while (sellingPrice <= buyingPrice);
         user.setSellingPrice(sellingPrice);
 
+        /* Get Years held */
         int numberOfYearsHeld;
-        System.out.print("Number of years held [type in positive number] : ");
-        numberOfYearsHeld = console.nextInt();
+        do {
+            System.out.print("Number of years held [type in positive number] : ");
+            while (!console.hasNextInt()) {
+                System.out.println("Please enter a valid integer.");
+                console.next();
+            }
+            numberOfYearsHeld = console.nextInt();
+
+            if (numberOfYearsHeld <= 0) {
+                System.out.println("Please enter a positive number.");
+            }
+        } while (numberOfYearsHeld <= 0);
         user.setYears(numberOfYearsHeld);
     }
 
     public boolean askToInvest(User user, Scanner console) {
         /*
          * I really want to set function name ScamTheUser()
-         * bro just buy the land in Third World countries
-         * (like in SEA countries like Burma or African Countries.)
+         * bro just buy the land in Third World countries like in
+         * (SEA countries like Burma or African Countries.)
          * you're sure going to be rich already
          * if not ur grandchildren will.
          */
+        boolean invest = false;
         String willInvest;
-        System.out.println("Would you like to invest? [yes/no]");
-        willInvest = console.next();
-
-        if (willInvest.equals("yes") || willInvest.equals("y")) {
-            return true;
-        } else if (willInvest.equals("no") || willInvest.equals("n")) {
-            return false;
-        } else
-            return false;
+        do {
+            System.out.println("Would you like to invest? [yes/no]");
+            willInvest = console.next();
+            if (isValidYesOrNo(willInvest)) {
+                invest = willInvest.equalsIgnoreCase("yes") || willInvest.equalsIgnoreCase("y");
+            } else {
+                System.out.println("Invalid input. Please enter 'yes', 'no', 'y', or 'n'.");
+            }
+        } while (!isValidYesOrNo(willInvest));
+        return invest;
     }
 
     public void continueInvestment(User user, Scanner console) {
         /*
-         * He's scamming bro careful!!
-         * Your Savings going to moon but upside down.
-         * see the image here :
+         * He's scamming bro, careful!!
+         * Your Savings going to the moon but upside down.
+         * see the image here:
          * https://blog.bontal.net/static/1737c560fa8633cd7ee90f1bdbaf926d/9000d/hero.webp
          */
 
