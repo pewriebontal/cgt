@@ -85,81 +85,85 @@ public class CgtInterface {
         console.close();
     }
 
-    private boolean isNotValidName(String name, boolean isElonMusksSon) {
-        /*
-         * Sir, You mentioned earlier in class with ancient headstone example
-         * we need to consider for the future.
-         * I'm letting numbers in name just in case.
-         */
-        if (isElonMusksSon)
-            return !name.matches("[a-zA-Z0-9 ]+");
-        else
-            return !name.matches("[a-zA-Z ]+");
+    /* Need to Test heavily */
+    private String getValidatedInput(String prompt, Scanner console, String regex, String invalidMessage) {
+        String input;
+        do {
+            System.out.print(prompt);
+            input = console.nextLine(); // using Scanner.nextLine() to accept
+            /* space in Full Name, for example. "Natalia Galileo Oreo" */
+            if (!input.matches(regex)) {
+                System.out.println(invalidMessage);
+            }
+        } while (!input.matches(regex));
+        return input;
     }
 
-    private boolean isValidYesOrNo(String string) {
-        return (string.equalsIgnoreCase("y")
-                || string.equalsIgnoreCase("yes")
-                || string.equalsIgnoreCase("n")
-                || string.equalsIgnoreCase("no"));
+    private int getValidatedNumInput(double minimum, double maximum, String prompt, Scanner console,
+            String invalidMessage) {
+        int value;
+        do {
+            System.out.print(prompt);
+            while (!console.hasNextInt()) {
+                System.out.println("Enter Positive Number Only!");
+                System.out.print(prompt);
+                console.next();
+            }
+            value = console.nextInt();
+            if (value <= minimum || (maximum != -1 && value > maximum)) {
+                System.out.println(invalidMessage);
+            }
+        } while (value <= minimum || (maximum != -1 && value > maximum));
+        return value;
     }
+
+    private String getYesOrNoInput(String prompt, Scanner console) {
+        String input;
+        do {
+            System.out.print(prompt);
+            input = console.next().toLowerCase();
+        } while (!input.equals("yes") && !input.equals("no") && !input.equals("y") && !input.equals("n"));
+        return input;
+    }
+    /* Ends here */
 
     public void askUserDetails(User user, Scanner console) {
         boolean isElonMusksSon;
+        String regexName;
+        isElonMusksSon = false; // Turn it to true if we're putting numbers into our names.
 
-        isElonMusksSon = false; // Turn it to true if we're putting numbers into names.
+        /*
+         * Sir, You mentioned earlier in class with ancient headstone example
+         * we need to consider for the future.
+         * I'm letting numbers in name just in case Elon's Son wants to use this
+         * system.
+         */
+         
+        if (isElonMusksSon)
+            regexName = "[a-zA-Z0-9 ]+";
+        else
+            regexName = "[a-zA-Z ]+";
 
         /* Get and Set Name */
         String name;
-        name = "";
-
-        do {
-            System.out.print("What's your name? [put your name hit enter] ");
-            name = console.nextLine(); // using Scanner.nextLine() to accept
-            /* space in Full Name, for example. "Natalia Galileo Oreo" */
-            /*
-             * also accepting numbers in name just in case Elon's Son wants to use this
-             * system.
-             */
-            if (isNotValidName(name, isElonMusksSon)) {
-                System.out.println("Please enter a valid name (letters only, no numbers or special characters).");
-            }
-
-        } while (isNotValidName(name, isElonMusksSon));
+        name = getValidatedInput("What's your name? [put your name hit enter] ", console, regexName,
+                "Please enter a valid name (letters only, no numbers or special characters).");
         user.setName(name);
 
         /* Get and Set Salary */
         int salary;
-
-        do {
-            System.out.print("Your Annual Salary? [input number only] ");
-            while (!console.hasNextInt()) {
-                System.out.println("Please enter a valid number.");
-                System.out.print("Your Annual Salary? [input number only] ");
-                console.next();
-            }
-            salary = console.nextInt();
-
-            if (salary <= 0) {
-                System.out.println("Please enter a positive number for salary. You dont have job? Skill Issue!");
-            }
-
-        } while (salary <= 0);
-
+        salary = getValidatedNumInput(0, -1, "Your Annual Salary? [input number only] ", console,
+                "Please enter a positive number for salary. You dont have job? Skill Issue!");
         user.setAnnualSalary(salary);
 
         /* Get and Set Residential Status */
         String inputResident;
-
-        do {
-            System.out.print("Are you resident of Australia? [yes/no] ");
-            inputResident = console.next();
-            if (isValidYesOrNo(inputResident)) {
-                user.setResident(inputResident.equalsIgnoreCase("y") || inputResident.equalsIgnoreCase("yes"));
-            } else {
-                System.out.println("Invalid input. Please enter 'yes', 'no', 'y', or 'n'.");
-            }
-        } while (!(isValidYesOrNo(inputResident)));
+        inputResident = getYesOrNoInput("Are you resident of Australia? [yes/no] ", console);
+        if (inputResident.equals("yes") || inputResident.equals("y")) {
+            user.setResident(true);
+        } else {
+            user.setResident(false);
+        }
     }
 
     public void askIncome(User user, Scanner console) {
@@ -170,59 +174,29 @@ public class CgtInterface {
 
         /* Get Buying Price */
         int buyingPrice;
-        do {
-            System.out.print("Buying price [type in positive number] : $");
-            while (!console.hasNextInt()) {
-                System.out.println("Please enter a valid positive number.");
-                System.out.print("Buying price [type in positive number] : $");
-                console.next();
-            }
-            buyingPrice = console.nextInt();
 
-            if (buyingPrice <= 0) {
-                System.out.println("Please enter a valid positive number.");
-            }
-        } while (buyingPrice <= 0);
+        buyingPrice = getValidatedNumInput(0, -1, "Buying price [type in positive number] : $", console,
+                "Please enter a valid positive number.");
         user.setBuyingPrice(buyingPrice);
 
         /* Get Selling Price */
         int sellingPrice;
-        do {
-            System.out.print("Selling price [type in positive number] : $");
-            while (!console.hasNextInt()) {
-                System.out.println("Please enter a valid positive number.");
-                System.out.print("Selling price [type in positive number] : $");
-                console.next();
-            }
-            sellingPrice = console.nextInt();
-            if (sellingPrice <= buyingPrice) {
-                /*
-                 * As PDF mentions
-                 * For this assignment, we are
-                 * assuming that the selling price is always more than buying price so this
-                 * should be checked as well, otherwise
-                 * an error message is shown and ask again for selling price.
-                 */
-                System.out.println("Please enter a value greater than Buying Price");
-            }
-        } while (sellingPrice <= buyingPrice);
+        /*
+         * As PDF mentions
+         * For this assignment, we are
+         * assuming that the selling price is always more than buying price so this
+         * should be checked as well, otherwise
+         * an error message is shown and ask again for selling price.
+         */
+        sellingPrice = getValidatedNumInput(buyingPrice, -1, "Selling price [type in positive number] : $", console,
+                "Please enter a value greater than Buying Price");
+
         user.setSellingPrice(sellingPrice);
 
         /* Get Years held */
         int numberOfYearsHeld;
-        do {
-            System.out.print("Number of years held [type in positive number] : ");
-            while (!console.hasNextInt()) {
-                System.out.println("Please enter a valid integer.");
-                System.out.print("Number of years held [type in positive number] :");
-                console.next();
-            }
-            numberOfYearsHeld = console.nextInt();
-
-            if (numberOfYearsHeld <= 0) {
-                System.out.println("Please enter a positive number.");
-            }
-        } while (numberOfYearsHeld <= 0);
+        numberOfYearsHeld = getValidatedNumInput(0, -1, "Number of years held [type in positive number] : ", console,
+                "Please enter a positive number greater than zero.");
         user.setYears(numberOfYearsHeld);
     }
 
@@ -236,15 +210,11 @@ public class CgtInterface {
          */
         boolean invest = false;
         String willInvest;
-        do {
-            System.out.println("Would you like to invest? [yes/no]");
-            willInvest = console.next();
-            if (isValidYesOrNo(willInvest)) {
-                invest = willInvest.equalsIgnoreCase("yes") || willInvest.equalsIgnoreCase("y");
-            } else {
-                System.out.println("Invalid input. Please enter 'yes', 'no', 'y', or 'n'.");
-            }
-        } while (!isValidYesOrNo(willInvest));
+
+        willInvest = getYesOrNoInput("Would you like to invest? [yes/no] ", console);
+        if (willInvest.equals("yes") || willInvest.equals("y")) {
+            invest = true;
+        }
         return invest;
     }
 
@@ -260,27 +230,17 @@ public class CgtInterface {
         int secondYearDeposit = 0;
         int thirdYearDeposit = 0;
 
-        do {
-            System.out.print("Enter initial investment amount (cannot exceed $" + user.getActualProfit() + "): $");
-            while (!console.hasNextInt()) {
-                System.out.println("Invalid input. Please enter a positive number.");
-                console.next();
-            }
-            firstYearDeposit = console.nextInt();
-        } while (firstYearDeposit > user.getActualProfit() || firstYearDeposit <= 0);
+        firstYearDeposit = getValidatedNumInput(0, user.getActualProfit(),
+                "Enter initial investment amount (cannot exceed $" + user.getActualProfit() + "): $", console,
+                "Invalid input. Please enter a positive number.");
 
         // Get and validate subsequent deposits
         for (int year = 2; year <= 3; year++) {
             int deposit;
-            do {
-                System.out.print("Enter investment amount after year " + (year - 1) + ": $");
-                while (!console.hasNextInt()) {
-                    System.out.println("Invalid input. Please enter a positive number.");
-                    console.next();
-                }
-                deposit = console.nextInt();
-            } while (deposit <= 0);
 
+            deposit = getValidatedNumInput(0, user.getActualProfit(),
+                    "Enter investment amount after year " + (year - 1) + ": $", console,
+                    "Invalid input. Please enter a positive number.");
             if (year == 2) {
                 secondYearDeposit = deposit;
             } else {
@@ -298,22 +258,16 @@ public class CgtInterface {
         System.out.println("1 for Best Coin (predicted profit rates 18%)");
         System.out.println("2 for Simple Coin (predicted profit rates 12%)");
         System.out.println("3 for Fast Coin (predicted profit rates 15%)");
-        do {
-            System.out.print("[type 1/2/3]: ");
 
-            while (!console.hasNextInt()) {
-                System.out.println("Invalid input. Please enter a number between 1 and 3.");
-                console.next();
-            }
-            coinSelection = console.nextInt();
-        } while (coinSelection < 1 || coinSelection > 3);
+        coinSelection = getValidatedNumInput(1, 3, "[type 1/2/3]: ", console,
+                "Invalid input. Please enter a number between 1 and 3.");
 
         // Set coin selection in the user object
         user.setInvestCoinSelection(coinSelection);
-        System.out.println("You Selected " + getSelectedCoin(user, user.getInvestCoinSelection()));
+        System.out.println("You Selected " + getSelectedCoinName(user, user.getInvestCoinSelection()));
     }
 
-    public String getSelectedCoin(User user, int selected) {
+    public String getSelectedCoinName(User user, int selected) {
         return switch (user.getInvestCoinSelection()) {
             case 1 -> "BestCoin";
             case 2 -> "SimpleCoin";
@@ -332,7 +286,8 @@ public class CgtInterface {
          */
 
         System.out
-                .println("Predicted Profit for Investment in " + getSelectedCoin(user, user.getInvestCoinSelection()));
+                .println("Predicted Profit for Investment in "
+                        + getSelectedCoinName(user, user.getInvestCoinSelection()));
         System.out.printf("%-8s|%-22s|%-15s\n", "Years", "YearlyProfit", "TotalProfit");
         System.out.println("________|______________________|_______________");
 
