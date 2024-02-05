@@ -213,6 +213,7 @@ public class CgtInterface {
             System.out.print("Number of years held [type in positive number] : ");
             while (!console.hasNextInt()) {
                 System.out.println("Please enter a valid integer.");
+                System.out.print("Number of years held [type in positive number] :");
                 console.next();
             }
             numberOfYearsHeld = console.nextInt();
@@ -258,28 +259,81 @@ public class CgtInterface {
         int secondYearDeposit;
         int thirdYearDeposit;
 
-        System.out.print("Initial Investment Amount (cannot be more than $" + user.getActualProfit() + "): $");
-        firstYearDeposit = console.nextInt();
+        /* Get and Set First Year Deposit */
+        do {
+            System.out.print("Initial Investment Amount (cannot be more than $" + user.getActualProfit() + "): $");
+            while (!console.hasNextInt()) {
+                System.out.println("Please enter valid positive number.");
+                console.next();
+            }
+            firstYearDeposit = console.nextInt();
+            if (firstYearDeposit > user.getActualProfit()) {
+                System.out.println("Amount cannot be more than" + user.getActualProfit() + "): $");
+            }
+        } while (firstYearDeposit > user.getActualProfit());
         user.setYearOneDeposit(firstYearDeposit);
 
-        System.out.print("Investment Amount after First year: $");
-        secondYearDeposit = console.nextInt();
+        /* Get and Set Second Year Deposit */
+        do {
+            System.out.print("Investment Amount after First year: $");
+            while (!console.hasNextInt()) {
+                System.out.println("Please enter valid positive number.");
+                console.next();
+            }
+            secondYearDeposit = console.nextInt();
+            if (secondYearDeposit <= 0) {
+                System.out.println("Please enter valid positive number.");
+            }
+        } while (secondYearDeposit <= 0);
         user.setYearTwoDeposit(secondYearDeposit);
 
-        System.out.print("Investment Amount after Second year: $");
-        thirdYearDeposit = console.nextInt();
+        /* Get and Set Third Year Deposit */
+        do {
+            System.out.print("Investment Amount after Second year: $");
+            while (!console.hasNextInt()) {
+                System.out.println("Please enter valid positive number.");
+                console.next();
+            }
+            thirdYearDeposit = console.nextInt();
+            if (thirdYearDeposit <= 0) {
+                System.out.println("Please enter valid positive number.");
+            }
+        } while (thirdYearDeposit <= 0);
         user.setYearThreeDeposit(thirdYearDeposit);
 
+        /* Get and Set Coin Selection */
         int inputSelection;
         System.out.println("Choose the Cryptocurrency to invest in");
         System.out.println("1 for Best Coin (predicted profit rates 18%)");
         System.out.println("2 for Simple Coin (predicted profit rates 12%)");
         System.out.println("3 for Fast Coin (predicted profit rates 15%)");
-        System.out.print("[type 1/2/3] ");
-        inputSelection = console.nextInt();
-
+        do {
+            System.out.print("[type 1/2/3] ");
+            while (!console.hasNextInt()) {
+                System.out.println("Please enter valid number.");
+                System.out.print("[type 1/2/3] ");
+                console.next();
+            }
+            inputSelection = console.nextInt();
+            if (!(inputSelection > 0 && inputSelection <= 3)) {
+                System.out.println("Please choose number between 1 to 3");
+            }
+        } while (!(inputSelection > 0 && inputSelection <= 3));
         user.setInvestCoinSelection(inputSelection);
-        System.out.println("You Selected " + user.getInvestCoinSelection());
+        System.out.println("You Selected " + getSelectedCoin(user, user.getInvestCoinSelection()));
+    }
+
+    public String getSelectedCoin(User user, int selected) {
+        return switch (user.getInvestCoinSelection()) {
+            case 1 -> "BestCoin";
+            case 2 -> "SimpleCoin";
+            case 3 -> "FastCoin";
+            default -> throw new IllegalStateException("Unexpected value: " + user.getInvestCoinSelection());
+        };
+    }
+
+    private static void printTableRow(int year, double yearlyProfit, double totalProfit) {
+        System.out.printf("%-8d|$%-21.2f|$%-14.2f\n", year, yearlyProfit, totalProfit);
     }
 
     public void printPredictedProfitForInvestment(User user) {
@@ -287,73 +341,50 @@ public class CgtInterface {
          * This function print Predicted Profit Table in a nice way.
          */
 
-        String coin = switch (user.getInvestCoinSelection()) {
-            case 1 -> "BestCoin";
-            case 2 -> "SimpleCoin";
-            case 3 -> "FastCoin";
-            default -> throw new IllegalStateException("Unexpected value: " + user.getInvestCoinSelection());
-        };
-
-        System.out.println("Predicted Profit for Investment in " + coin);
-        System.out.println("Years \t|\tYearlyProfit \t|\tTotalProfit");
-        System.out.println("________|___________________|_______________");
-        System.out.println("1 \t\t|\t$" + user.getYearOneProfit() + " \t\t\t|\t$" + user.getYearOneTotalProfit());
-        System.out.println("2 \t\t|\t$" + user.getYearTwoProfit() + " \t\t\t|\t$" + user.getYearTwoTotalProfit());
-        System.out.println("3 \t\t|\t$" + user.getYearThreeProfit() + " \t\t\t|\t$" + user.getYearThreeTotalProfit());
-
+        System.out
+                .println("Predicted Profit for Investment in " + getSelectedCoin(user, user.getInvestCoinSelection()));
+        System.out.printf("%-8s|%-22s|%-15s\n", "Years", "YearlyProfit", "TotalProfit");
+        System.out.println("________|______________________|_______________");
+        printTableRow(1, user.getYearOneProfit(), user.getYearOneTotalProfit());
+        printTableRow(2, user.getYearTwoProfit(), user.getYearTwoTotalProfit());
+        printTableRow(3, user.getYearThreeProfit(), user.getYearThreeTotalProfit());
     }
 
     public void printCapitalGainsTax(User user) {
         System.out.println();
+
         System.out.println("Capital Gains Tax:");
+        System.out.println("Tax Rate : " + user.getTaxRate() * 100 + "%");
+        System.out.println("Capital Gains Tax : " + user.getCgt());
+        System.out.println("Profit : " + user.getActualProfit());
 
-        System.out.print("Tax Rate : ");
-        System.out.println(user.getTaxRate() * 100 + "%");
-
-        System.out.print("Capital Gains Tax : ");
-        System.out.println(user.getCgt());
-
-        System.out.print("Profit : ");
-        System.out.println(user.getActualProfit());
         System.out.println();
     }
 
     public void printUserData(User user, boolean willInvest) {
-
         /* print all the available User data in the final */
+
         /* User Details */
         System.out.println();
         System.out.println("User Details");
 
-        System.out.print("Name : ");
-        System.out.println(user.getName());
-
-        System.out.print("Annual Salary : ");
-        System.out.println(user.getAnnualSalary());
+        System.out.println("Name : " + user.getName());
+        System.out.println("Annual Salary : " + user.getAnnualSalary());
 
         System.out.print("Residential Status : ");
         if (user.getResident())
             System.out.println("Yes");
         else
             System.out.println("No");
-        /* END USER DETAILS */
-
         System.out.println();
 
         /* PRINT INVESTMENT */
         System.out.println("Crypto Currency");
-
-        System.out.print("Buying Price : ");
-        System.out.println(user.getBuyingPrice());
-
-        System.out.print("Selling Price : ");
-        System.out.println(user.getSellingPrice());
-
-        System.out.print("Number of years held : ");
-        System.out.println(user.getYears());
+        System.out.println("Buying Price : " + user.getBuyingPrice());
+        System.out.println("Selling Price : " + user.getSellingPrice());
+        System.out.println("Number of years held : " + user.getYears());
 
         printCapitalGainsTax(user);
-
         if (willInvest)
             printPredictedProfitForInvestment(user);
     }
