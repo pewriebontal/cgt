@@ -2,4 +2,4 @@
 UON SENG1110 Assignment 01
 
 
-Start from ./main/java/net/bontal/cgt/CgtInterface.java
+Start from [here](./src/main/java/net/bontal/cgt/CgtInterface.java)

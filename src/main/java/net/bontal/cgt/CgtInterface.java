@@ -98,17 +98,18 @@ public class CgtInterface {
     }
 
     private boolean isValidYesOrNo(String string) {
-        return (string.equalsIgnoreCase("y") || string.equalsIgnoreCase("yes") || string.equalsIgnoreCase("n")
+        return (string.equalsIgnoreCase("y")
+                || string.equalsIgnoreCase("yes")
+                || string.equalsIgnoreCase("n")
                 || string.equalsIgnoreCase("no"));
     }
 
     public void askUserDetails(User user, Scanner console) {
         boolean isElonMusksSon;
 
-        isElonMusksSon = false;
-        isElonMusksSon = true;
+        isElonMusksSon = false; // Turn it to true if we're putting numbers into names.
 
-        /* Get Name */
+        /* Get and Set Name */
         String name;
         name = "";
 
@@ -127,7 +128,7 @@ public class CgtInterface {
         } while (isNotValidName(name, isElonMusksSon));
         user.setName(name);
 
-        /* Get Salary */
+        /* Get and Set Salary */
         int salary;
 
         do {
@@ -147,7 +148,7 @@ public class CgtInterface {
 
         user.setAnnualSalary(salary);
 
-        /* Get Residential Status */
+        /* Get and Set Residential Status */
         String inputResident;
 
         do {
@@ -228,7 +229,7 @@ public class CgtInterface {
     public boolean askToInvest(User user, Scanner console) {
         /*
          * I really want to set function name ScamTheUser()
-         * bro just buy the land in Third World countries like in
+         * bro just buy the lands in Third World countries like in
          * (SEA countries like Burma or African Countries.)
          * you're sure going to be rich already
          * if not ur grandchildren will.
@@ -255,71 +256,60 @@ public class CgtInterface {
          * https://blog.bontal.net/static/1737c560fa8633cd7ee90f1bdbaf926d/9000d/hero.webp
          */
 
-        int firstYearDeposit; // I don't know should I use year1Deposit or yearOneDeposit or firstYearDeposit?
-        int secondYearDeposit;
-        int thirdYearDeposit;
+        int firstYearDeposit = 0; // I don't know should I use year1Deposit or yearOneDeposit or firstYearDeposit?
+        int secondYearDeposit = 0;
+        int thirdYearDeposit = 0;
 
-        /* Get and Set First Year Deposit */
         do {
-            System.out.print("Initial Investment Amount (cannot be more than $" + user.getActualProfit() + "): $");
+            System.out.print("Enter initial investment amount (cannot exceed $" + user.getActualProfit() + "): $");
             while (!console.hasNextInt()) {
-                System.out.println("Please enter valid positive number.");
+                System.out.println("Invalid input. Please enter a positive number.");
                 console.next();
             }
             firstYearDeposit = console.nextInt();
-            if (firstYearDeposit > user.getActualProfit()) {
-                System.out.println("Amount cannot be more than" + user.getActualProfit() + "): $");
+        } while (firstYearDeposit > user.getActualProfit() || firstYearDeposit <= 0);
+
+        // Get and validate subsequent deposits
+        for (int year = 2; year <= 3; year++) {
+            int deposit;
+            do {
+                System.out.print("Enter investment amount after year " + (year - 1) + ": $");
+                while (!console.hasNextInt()) {
+                    System.out.println("Invalid input. Please enter a positive number.");
+                    console.next();
+                }
+                deposit = console.nextInt();
+            } while (deposit <= 0);
+
+            if (year == 2) {
+                secondYearDeposit = deposit;
+            } else {
+                thirdYearDeposit = deposit;
             }
-        } while (firstYearDeposit > user.getActualProfit());
+        }
+
         user.setDeposit(firstYearDeposit, 1);
-
-        /* Get and Set Second Year Deposit */
-        do {
-            System.out.print("Investment Amount after First year: $");
-            while (!console.hasNextInt()) {
-                System.out.println("Please enter valid positive number.");
-                console.next();
-            }
-            secondYearDeposit = console.nextInt();
-            if (secondYearDeposit <= 0) {
-                System.out.println("Please enter valid positive number.");
-            }
-        } while (secondYearDeposit <= 0);
         user.setDeposit(secondYearDeposit, 2);
-
-        /* Get and Set Third Year Deposit */
-        do {
-            System.out.print("Investment Amount after Second year: $");
-            while (!console.hasNextInt()) {
-                System.out.println("Please enter valid positive number.");
-                console.next();
-            }
-            thirdYearDeposit = console.nextInt();
-            if (thirdYearDeposit <= 0) {
-                System.out.println("Please enter valid positive number.");
-            }
-        } while (thirdYearDeposit <= 0);
         user.setDeposit(thirdYearDeposit, 3);
 
         /* Get and Set Coin Selection */
-        int inputSelection;
+        int coinSelection;
         System.out.println("Choose the Cryptocurrency to invest in");
         System.out.println("1 for Best Coin (predicted profit rates 18%)");
         System.out.println("2 for Simple Coin (predicted profit rates 12%)");
         System.out.println("3 for Fast Coin (predicted profit rates 15%)");
         do {
-            System.out.print("[type 1/2/3] ");
+            System.out.print("[type 1/2/3]: ");
+
             while (!console.hasNextInt()) {
-                System.out.println("Please enter valid number.");
-                System.out.print("[type 1/2/3] ");
+                System.out.println("Invalid input. Please enter a number between 1 and 3.");
                 console.next();
             }
-            inputSelection = console.nextInt();
-            if (!(inputSelection > 0 && inputSelection <= 3)) {
-                System.out.println("Please choose number between 1 to 3");
-            }
-        } while (!(inputSelection > 0 && inputSelection <= 3));
-        user.setInvestCoinSelection(inputSelection);
+            coinSelection = console.nextInt();
+        } while (coinSelection < 1 || coinSelection > 3);
+
+        // Set coin selection in the user object
+        user.setInvestCoinSelection(coinSelection);
         System.out.println("You Selected " + getSelectedCoin(user, user.getInvestCoinSelection()));
     }
 
