@@ -271,7 +271,7 @@ public class CgtInterface {
                 System.out.println("Amount cannot be more than" + user.getActualProfit() + "): $");
             }
         } while (firstYearDeposit > user.getActualProfit());
-        user.setYearOneDeposit(firstYearDeposit);
+        user.setDeposit(firstYearDeposit, 1);
 
         /* Get and Set Second Year Deposit */
         do {
@@ -285,7 +285,7 @@ public class CgtInterface {
                 System.out.println("Please enter valid positive number.");
             }
         } while (secondYearDeposit <= 0);
-        user.setYearTwoDeposit(secondYearDeposit);
+        user.setDeposit(secondYearDeposit, 2);
 
         /* Get and Set Third Year Deposit */
         do {
@@ -299,7 +299,7 @@ public class CgtInterface {
                 System.out.println("Please enter valid positive number.");
             }
         } while (thirdYearDeposit <= 0);
-        user.setYearThreeDeposit(thirdYearDeposit);
+        user.setDeposit(thirdYearDeposit, 3);
 
         /* Get and Set Coin Selection */
         int inputSelection;
@@ -345,9 +345,10 @@ public class CgtInterface {
                 .println("Predicted Profit for Investment in " + getSelectedCoin(user, user.getInvestCoinSelection()));
         System.out.printf("%-8s|%-22s|%-15s\n", "Years", "YearlyProfit", "TotalProfit");
         System.out.println("________|______________________|_______________");
-        printTableRow(1, user.getYearOneProfit(), user.getYearOneTotalProfit());
-        printTableRow(2, user.getYearTwoProfit(), user.getYearTwoTotalProfit());
-        printTableRow(3, user.getYearThreeProfit(), user.getYearThreeTotalProfit());
+
+        for (int year = 1; year <= 3; year++) {
+            printTableRow(year, user.getYearlyProfit(year), user.getTotalProfit(year));
+        }
     }
 
     public void printCapitalGainsTax(User user) {

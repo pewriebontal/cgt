@@ -48,13 +48,11 @@ public class Investment {
 	private double yearThreeProfit;
 
 	private double yearOneTotalProfit;
-
 	private double yearTwoTotalProfit;
 	private double yearThreeTotalProfit;
 
 	// constructor
 	public Investment() {
-
 	}
 
 	public void setCoinSelection(int inputSelection) {
@@ -65,28 +63,21 @@ public class Investment {
 		return (coinSelection);
 	}
 
-	public double getYear1Deposit() {
-		return year1Deposit;
+	public double getDeposit(int year) {
+		return switch (year) {
+			case 1 -> year1Deposit;
+			case 2 -> year2Deposit;
+			case 3 -> year3Deposit;
+			default -> 0.0;
+		};
 	}
 
-	public double getYear2Deposit() {
-		return year2Deposit;
-	}
-
-	public double getYear3Deposit() {
-		return year3Deposit;
-	}
-
-	public void setYear1Deposit(int inputYear1Deposit) {
-		year1Deposit = inputYear1Deposit;
-	}
-
-	public void setYear2Deposit(int inputYear2Deposit) {
-		year2Deposit = inputYear2Deposit;
-	}
-
-	public void setYear3Deposit(int inputYear3Deposit) {
-		year3Deposit = inputYear3Deposit;
+	public void setDeposit(int inputDeposit, int year) {
+		switch (year) {
+			case 1 -> year1Deposit = inputDeposit;
+			case 2 -> year2Deposit = inputDeposit;
+			case 3 -> year3Deposit = inputDeposit;
+		}
 	}
 
 	public void calculateInvestment() {
@@ -124,27 +115,21 @@ public class Investment {
 		yearThreeTotalProfit = yearOneProfit + yearTwoProfit + yearThreeProfit;
 	}
 
-	public double getYearOneProfit() {
-		return yearOneProfit;
+	public double getYearlyProfit(int year) {
+		return switch (year) {
+			case 1 -> yearOneProfit;
+			case 2 -> yearTwoProfit;
+			case 3 -> yearThreeProfit;
+			default -> 0.0;
+		};
 	}
 
-	public double getYearTwoProfit() {
-		return yearTwoProfit;
-	}
-
-	public double getYearThreeProfit() {
-		return yearThreeProfit;
-	}
-
-	public double getYearOneTotalProfit() {
-		return yearOneTotalProfit;
-	}
-
-	public double getYearTwoTotalProfit() {
-		return yearTwoTotalProfit;
-	}
-
-	public double getYearThreeTotalProfit() {
-		return yearThreeTotalProfit;
+	public double getTotalProfit(int year) {
+		return switch (year) {
+			case 1 -> yearOneTotalProfit;
+			case 2 -> yearTwoTotalProfit;
+			case 3 -> yearThreeTotalProfit;
+			default -> 0.0;
+		};
 	}
 }

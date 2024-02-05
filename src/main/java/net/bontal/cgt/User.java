@@ -172,28 +172,12 @@ public class User {
         actualProfit = profitForCGT - cgt;
     }
 
-    public double getYearOneDeposit() {
-        return userInvestment.getYear1Deposit();
+    public double getDeposit(int year) {
+        return userInvestment.getDeposit(year);
     }
 
-    public double getYearTwoDeposit() {
-        return userInvestment.getYear2Deposit();
-    }
-
-    public double getYearThreeDeposit() {
-        return userInvestment.getYear3Deposit();
-    }
-
-    public void setYearOneDeposit(int yearOneDeposit) {
-        userInvestment.setYear1Deposit(yearOneDeposit);
-    }
-
-    public void setYearTwoDeposit(int yearTwoDeposit) {
-        userInvestment.setYear2Deposit(yearTwoDeposit);
-    }
-
-    public void setYearThreeDeposit(int yearThreeDeposit) {
-        userInvestment.setYear3Deposit(yearThreeDeposit);
+    public void setDeposit(int inputDeposit, int year) {
+        userInvestment.setDeposit(inputDeposit, year);
     }
 
     public double getTaxRate() {
@@ -212,28 +196,11 @@ public class User {
         userInvestment.calculateInvestment();
     }
 
-    public double getYearOneProfit() {
-        return userInvestment.getYearOneProfit();
+    public double getYearlyProfit(int year) {
+        return userInvestment.getYearlyProfit(year);
     }
 
-    public double getYearTwoProfit() {
-        return userInvestment.getYearTwoProfit();
+    public double getTotalProfit(int year) {
+        return userInvestment.getTotalProfit(year);
     }
-
-    public double getYearThreeProfit() {
-        return userInvestment.getYearThreeProfit();
-    }
-
-    public double getYearOneTotalProfit() {
-        return userInvestment.getYearOneTotalProfit();
-    }
-
-    public double getYearTwoTotalProfit() {
-        return userInvestment.getYearTwoTotalProfit();
-    }
-
-    public double getYearThreeTotalProfit() {
-        return userInvestment.getYearThreeTotalProfit();
-    }
-
 }
