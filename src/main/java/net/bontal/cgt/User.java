@@ -4,6 +4,7 @@
  *   Date: from 02-02-2024 to 03-02-2024
  *   Description: Fuck object oriented
  *   GitHub: @pewriebontal, @LinVulpes
+ *   © 2024 Min Thu Khaing, Thet Paing Hmu. All rights reserved.
  */
 
 /*
@@ -34,11 +35,9 @@
 
 package net.bontal.cgt;
 
-import net.bontal.cgt.User;
-
 public class User {
     private String name;
-    private Investment userInvestment;
+    private final Investment userInvestment;
     private double annualSalary;
     private double buyingPrice;
     private double sellingPrice;
@@ -137,7 +136,7 @@ public class User {
          * $120,001 – $180,000 37%
          * Over $180,001 45%
          *
-         * Tax rates – non residents
+         * Tax rates – non-residents
          * $0 – $120,000 32.5%
          * $120,001 – $180,000 37%
          * Over $180,001 45%
@@ -165,11 +164,36 @@ public class User {
 
         }
         /*
+         * Calculation
          * CGT = Tax rate * Profit for CGT
          * Actual Profit = Profit for CGT - CGT
          */
         cgt = taxRate * profitForCGT;
         actualProfit = profitForCGT - cgt;
+    }
+
+    public double getYearOneDeposit() {
+        return userInvestment.getYear1Deposit();
+    }
+
+    public double getYearTwoDeposit() {
+        return userInvestment.getYear2Deposit();
+    }
+
+    public double getYearThreeDeposit() {
+        return userInvestment.getYear3Deposit();
+    }
+
+    public void setYearOneDeposit(int yearOneDeposit) {
+        userInvestment.setYear1Deposit(yearOneDeposit);
+    }
+
+    public void setYearTwoDeposit(int yearTwoDeposit) {
+        userInvestment.setYear2Deposit(yearTwoDeposit);
+    }
+
+    public void setYearThreeDeposit(int yearThreeDeposit) {
+        userInvestment.setYear3Deposit(yearThreeDeposit);
     }
 
     public double getTaxRate() {
@@ -182,6 +206,34 @@ public class User {
 
     public double getActualProfit() {
         return actualProfit;
+    }
+
+    public void calculateInvestment() {
+        userInvestment.calculateInvestment();
+    }
+
+    public double getYearOneProfit() {
+        return userInvestment.getYearOneProfit();
+    }
+
+    public double getYearTwoProfit() {
+        return userInvestment.getYearTwoProfit();
+    }
+
+    public double getYearThreeProfit() {
+        return userInvestment.getYearThreeProfit();
+    }
+
+    public double getYearOneTotalProfit() {
+        return userInvestment.getYearOneTotalProfit();
+    }
+
+    public double getYearTwoTotalProfit() {
+        return userInvestment.getYearTwoTotalProfit();
+    }
+
+    public double getYearThreeTotalProfit() {
+        return userInvestment.getYearThreeTotalProfit();
     }
 
 }
