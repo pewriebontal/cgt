@@ -138,7 +138,7 @@ public class CgtInterface {
          * I'm letting numbers in name just in case Elon's Son wants to use this
          * system.
          */
-         
+
         if (isElonMusksSon)
             regexName = "[a-zA-Z0-9 ]+";
         else
@@ -232,7 +232,7 @@ public class CgtInterface {
 
         firstYearDeposit = getValidatedNumInput(0, user.getActualProfit(),
                 "Enter initial investment amount (cannot exceed $" + user.getActualProfit() + "): $", console,
-                "Invalid input. Please enter a positive number.");
+                "Invalid input. Initial investment amount cannot exceed $" + user.getActualProfit() + ".");
 
         // Get and validate subsequent deposits
         for (int year = 2; year <= 3; year++) {
