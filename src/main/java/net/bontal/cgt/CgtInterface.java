@@ -110,10 +110,10 @@ public class CgtInterface {
                 console.next();
             }
             value = console.nextInt();
-            if (value <= minimum || (maximum != -1 && value > maximum)) {
+            if (value < minimum || (maximum != -1 && value > maximum)) {
                 System.out.println(invalidMessage);
             }
-        } while (value <= minimum || (maximum != -1 && value > maximum));
+        } while (value < minimum || (maximum != -1 && value > maximum));
         return value;
     }
 
@@ -152,7 +152,7 @@ public class CgtInterface {
 
         /* Get and Set Salary */
         int salary;
-        salary = getValidatedNumInput(0, -1, "Your Annual Salary? [input number only] ", console,
+        salary = getValidatedNumInput(1, -1, "Your Annual Salary? [input number only] ", console,
                 "Please enter a positive number for salary. You dont have job? Skill Issue!");
         user.setAnnualSalary(salary);
 
@@ -175,7 +175,7 @@ public class CgtInterface {
         /* Get Buying Price */
         int buyingPrice;
 
-        buyingPrice = getValidatedNumInput(0, -1, "Buying price [type in positive number] : $", console,
+        buyingPrice = getValidatedNumInput(1, -1, "Buying price [type in positive number] : $", console,
                 "Please enter a valid positive number.");
         user.setBuyingPrice(buyingPrice);
 
@@ -188,14 +188,14 @@ public class CgtInterface {
          * should be checked as well, otherwise
          * an error message is shown and ask again for selling price.
          */
-        sellingPrice = getValidatedNumInput(buyingPrice, -1, "Selling price [type in positive number] : $", console,
+        sellingPrice = getValidatedNumInput(buyingPrice + 1, -1, "Selling price [type in positive number] : $", console,
                 "Please enter a value greater than Buying Price");
 
         user.setSellingPrice(sellingPrice);
 
         /* Get Years held */
         int numberOfYearsHeld;
-        numberOfYearsHeld = getValidatedNumInput(0, -1, "Number of years held [type in positive number] : ", console,
+        numberOfYearsHeld = getValidatedNumInput(1, -1, "Number of years held [type in positive number] : ", console,
                 "Please enter a positive number greater than zero.");
         user.setYears(numberOfYearsHeld);
     }
@@ -230,15 +230,20 @@ public class CgtInterface {
         int secondYearDeposit = 0;
         int thirdYearDeposit = 0;
 
-        firstYearDeposit = getValidatedNumInput(0, user.getActualProfit(),
-                "Enter initial investment amount (cannot exceed $" + user.getActualProfit() + "): $", console,
+        // TODO: [Very Important AF] ask professor what should we do if the previous
+        // profit is less than 0.
+
+        firstYearDeposit = getValidatedNumInput(1, user.getActualProfit(),
+                "Enter initial investment amount (must be positive number and cannot exceed $" + user.getActualProfit()
+                        + "): $",
+                console,
                 "Invalid input. Initial investment amount cannot exceed $" + user.getActualProfit() + ".");
 
         // Get and validate subsequent deposits
         for (int year = 2; year <= 3; year++) {
             int deposit;
 
-            deposit = getValidatedNumInput(0, user.getActualProfit(),
+            deposit = getValidatedNumInput(0, -1,
                     "Enter investment amount after year " + (year - 1) + ": $", console,
                     "Invalid input. Please enter a positive number.");
             if (year == 2) {
