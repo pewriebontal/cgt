@@ -72,7 +72,7 @@ public class Investment {
 		};
 	}
 
-	public void setDeposit(int inputDeposit, int year) {
+	public void setDeposit(double inputDeposit, int year) {
 		switch (year) {
 			case 1 -> year1Deposit = inputDeposit;
 			case 2 -> year2Deposit = inputDeposit;

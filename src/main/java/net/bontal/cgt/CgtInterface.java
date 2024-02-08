@@ -99,21 +99,24 @@ public class CgtInterface {
         return input;
     }
 
-    private int getValidatedNumInput(double minimum, double maximum, String prompt, Scanner console,
+    private double getValidatedNumInput(double minimum, double maximum, boolean acceptEqualToMinimum, String prompt,
+            Scanner console,
             String invalidMessage) {
-        int value;
+        double value;
         do {
             System.out.print(prompt);
-            while (!console.hasNextInt()) {
+            while (!console.hasNextDouble()) {
                 System.out.println("Enter Positive Number Only!");
                 System.out.print(prompt);
                 console.next();
             }
-            value = console.nextInt();
-            if (value < minimum || (maximum != -1 && value > maximum)) {
+            value = console.nextDouble();
+            if (value <= minimum && !acceptEqualToMinimum || value < minimum && acceptEqualToMinimum
+                    || (maximum != -1 && value > maximum)) {
                 System.out.println(invalidMessage);
             }
-        } while (value < minimum || (maximum != -1 && value > maximum));
+        } while (value <= minimum & !acceptEqualToMinimum || value < minimum && acceptEqualToMinimum
+                || (maximum != -1 && value > maximum));
         return value;
     }
 
@@ -151,8 +154,8 @@ public class CgtInterface {
         user.setName(name);
 
         /* Get and Set Salary */
-        int salary;
-        salary = getValidatedNumInput(1, -1, "Your Annual Salary? [input number only] ", console,
+        double salary;
+        salary = getValidatedNumInput(0, -1, false, "Your Annual Salary? [input number only] ", console,
                 "Please enter a positive number for salary. You dont have job? Skill Issue!");
         user.setAnnualSalary(salary);
 
@@ -173,14 +176,14 @@ public class CgtInterface {
          */
 
         /* Get Buying Price */
-        int buyingPrice;
+        double buyingPrice;
 
-        buyingPrice = getValidatedNumInput(1, -1, "Buying price [type in positive number] : $", console,
+        buyingPrice = getValidatedNumInput(0, -1, false, "Buying price [type in positive number] : $", console,
                 "Please enter a valid positive number.");
         user.setBuyingPrice(buyingPrice);
 
         /* Get Selling Price */
-        int sellingPrice;
+        double sellingPrice;
         /*
          * As PDF mentions
          * For this assignment, we are
@@ -188,14 +191,16 @@ public class CgtInterface {
          * should be checked as well, otherwise
          * an error message is shown and ask again for selling price.
          */
-        sellingPrice = getValidatedNumInput(buyingPrice + 1, -1, "Selling price [type in positive number] : $", console,
+        sellingPrice = getValidatedNumInput(buyingPrice, -1, false, "Selling price [type in positive number] : $",
+                console,
                 "Please enter a value greater than Buying Price");
 
         user.setSellingPrice(sellingPrice);
 
         /* Get Years held */
         int numberOfYearsHeld;
-        numberOfYearsHeld = getValidatedNumInput(1, -1, "Number of years held [type in positive number] : ", console,
+        numberOfYearsHeld = (int) getValidatedNumInput(1, -1, true, "Number of years held [type in positive number] : ",
+                console,
                 "Please enter a positive number greater than zero.");
         user.setYears(numberOfYearsHeld);
     }
@@ -222,29 +227,27 @@ public class CgtInterface {
         /*
          * He's scamming bro, careful!!
          * Your Savings going to the moon but upside down.
-         * see the image here:
-         * https://blog.bontal.net/static/1737c560fa8633cd7ee90f1bdbaf926d/9000d/hero.webp
+         * see the image here: https://dl.bontal.net/images/to_the_moom.webp
          */
 
-        int firstYearDeposit = 0; // I don't know should I use year1Deposit or yearOneDeposit or firstYearDeposit?
-        int secondYearDeposit = 0;
-        int thirdYearDeposit = 0;
+        double firstYearDeposit = 0; // I don't know should I use year1Deposit or yearOneDeposit or firstYearDeposit?
+        double secondYearDeposit = 0;
+        double thirdYearDeposit = 0;
 
         // TODO: [Very Important AF] ask professor what should we do if the previous
         // profit is less than 0.
+        // Nevermind, It was my mistake.
 
-        firstYearDeposit = getValidatedNumInput(1, user.getActualProfit(),
-                "Enter initial investment amount (must be positive number and cannot exceed $" + user.getActualProfit()
-                        + "): $",
-                console,
+        firstYearDeposit = getValidatedNumInput(0, user.getActualProfit(),
+                false, "Enter initial investment amount (cannot exceed $" + user.getActualProfit() + "): $", console,
                 "Invalid input. Initial investment amount cannot exceed $" + user.getActualProfit() + ".");
 
         // Get and validate subsequent deposits
         for (int year = 2; year <= 3; year++) {
-            int deposit;
+            double deposit;
 
             deposit = getValidatedNumInput(0, -1,
-                    "Enter investment amount after year " + (year - 1) + ": $", console,
+                    true, "Enter investment amount after year " + (year - 1) + ": $", console,
                     "Invalid input. Please enter a positive number.");
             if (year == 2) {
                 secondYearDeposit = deposit;
@@ -264,7 +267,7 @@ public class CgtInterface {
         System.out.println("2 for Simple Coin (predicted profit rates 12%)");
         System.out.println("3 for Fast Coin (predicted profit rates 15%)");
 
-        coinSelection = getValidatedNumInput(1, 3, "[type 1/2/3]: ", console,
+        coinSelection = (int) getValidatedNumInput(1, 3, true, "[type 1/2/3]: ", console,
                 "Invalid input. Please enter a number between 1 and 3.");
 
         // Set coin selection in the user object

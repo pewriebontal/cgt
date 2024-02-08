@@ -64,7 +64,7 @@ public class User {
         return annualSalary;
     }
 
-    public void setAnnualSalary(int inputAnnualSalary) {
+    public void setAnnualSalary(double inputAnnualSalary) {
         annualSalary = inputAnnualSalary;
     }
 
@@ -176,7 +176,7 @@ public class User {
         return userInvestment.getDeposit(year);
     }
 
-    public void setDeposit(int inputDeposit, int year) {
+    public void setDeposit(double inputDeposit, int year) {
         userInvestment.setDeposit(inputDeposit, year);
     }
 
