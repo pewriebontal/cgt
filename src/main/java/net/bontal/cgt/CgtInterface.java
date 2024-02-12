@@ -62,6 +62,7 @@ public class CgtInterface {
     public void run() {
         Scanner console = new Scanner(System.in);
         User user;
+        boolean willInvest;
         user = new User();
 
         askUserDetails(user, console);
@@ -71,8 +72,6 @@ public class CgtInterface {
         user.calculateCgt();
 
         printCapitalGainsTax(user);
-
-        boolean willInvest;
 
         willInvest = askToInvest(user, console);
 
@@ -86,12 +85,16 @@ public class CgtInterface {
     }
 
     /* Need to Test heavily */
-    private String getValidatedInput(String prompt, Scanner console, String regex, String invalidMessage) {
+    private String getValidatedInput(String prompt, Scanner console, boolean isName, String regex,
+            String invalidMessage) {
         String input;
         do {
             System.out.print(prompt);
-            input = console.nextLine(); // using Scanner.nextLine() to accept
+            if (isName)
+                input = console.nextLine(); // using Scanner.nextLine() to accept
             /* space in Full Name, for example. "Natalia Galileo Oreo" */
+            else
+                input = console.next();
             if (!input.matches(regex)) {
                 System.out.println(invalidMessage);
             }
@@ -119,15 +122,6 @@ public class CgtInterface {
                 || (maximum != -1 && value > maximum));
         return value;
     }
-
-    private String getYesOrNoInput(String prompt, Scanner console) {
-        String input;
-        do {
-            System.out.print(prompt);
-            input = console.next().toLowerCase();
-        } while (!input.equals("yes") && !input.equals("no") && !input.equals("y") && !input.equals("n"));
-        return input;
-    }
     /* Ends here */
 
     public void askUserDetails(User user, Scanner console) {
@@ -149,7 +143,7 @@ public class CgtInterface {
 
         /* Get and Set Name */
         String name;
-        name = getValidatedInput("What's your name? [put your name hit enter] ", console, regexName,
+        name = getValidatedInput("What's your name? [put your name hit enter] ", console, true, regexName,
                 "Please enter a valid name (letters only, no numbers or special characters).");
         user.setName(name);
 
@@ -161,7 +155,8 @@ public class CgtInterface {
 
         /* Get and Set Residential Status */
         String inputResident;
-        inputResident = getYesOrNoInput("Are you resident of Australia? [yes/no] ", console);
+        inputResident = getValidatedInput("Are you resident of Australia? [yes/no] ", console, false, "^(yes|no|y|n)$",
+                "Invalid input. Please enter 'yes' or 'no'.");
         if (inputResident.equals("yes") || inputResident.equals("y")) {
             user.setResident(true);
         } else {
@@ -216,7 +211,8 @@ public class CgtInterface {
         boolean invest = false;
         String willInvest;
 
-        willInvest = getYesOrNoInput("Would you like to invest? [yes/no] ", console);
+        willInvest = getValidatedInput("Would you like to invest? [yes/no] ", console, false, "^(yes|no|y|n)$",
+                "Invalid input. Please enter 'yes' or 'no'.");
         if (willInvest.equals("yes") || willInvest.equals("y")) {
             invest = true;
         }
