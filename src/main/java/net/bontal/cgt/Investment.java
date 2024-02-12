@@ -35,7 +35,30 @@
 
 package net.bontal.cgt;
 
-// You can add extra methods if you think it is necessary
+/**
+ * The Investment class represents an investment that the user plans to make
+ * over three years.
+ * It includes information about the deposits made each year and methods for
+ * calculating predicted profits
+ * based on the selected coin and deposits.
+ *
+ * <p>
+ * This class allows setting the selected coin for investment, retrieving and
+ * setting deposits for each year,
+ * calculating predicted profits, and getting predicted yearly and total profits
+ * for each year.
+ *
+ * <p>
+ * Copyright © 2024 Min Thu Khaing, Thet Paing Hmu. All rights reserved.
+ *
+ * @version 1.0
+ * @since 02-02-2024
+ * @author Min Thu Khaing
+ * @author Thet Paing Hmu
+ * @see User
+ * @see CgtInterface
+ */
+
 public class Investment {
 	private double year1Deposit;
 	private double year2Deposit;
@@ -51,18 +74,36 @@ public class Investment {
 	private double yearTwoTotalProfit;
 	private double yearThreeTotalProfit;
 
-	// constructor
+	/**
+	 * Constructs an Investment object.
+	 */
 	public Investment() {
 	}
 
+	/**
+	 * Sets the selected coin for investment.
+	 * 
+	 * @param inputSelection The selected coin for investment.
+	 */
 	public void setCoinSelection(int inputSelection) {
 		coinSelection = inputSelection;
 	}
 
+	/**
+	 * Gets the selected coin for investment.
+	 * 
+	 * @return The selected coin for investment.
+	 */
 	public int getCoinSelection() {
 		return (coinSelection);
 	}
 
+	/**
+	 * Gets the deposit for a specific year.
+	 * 
+	 * @param year The year for which deposit is retrieved.
+	 * @return The deposit for the specified year.
+	 */
 	public double getDeposit(int year) {
 		return switch (year) {
 			case 1 -> year1Deposit;
@@ -72,6 +113,12 @@ public class Investment {
 		};
 	}
 
+	/**
+	 * Sets the deposit for a specific year.
+	 * 
+	 * @param inputDeposit The deposit amount to set.
+	 * @param year         The year for which the deposit is set.
+	 */
 	public void setDeposit(double inputDeposit, int year) {
 		switch (year) {
 			case 1 -> year1Deposit = inputDeposit;
@@ -80,6 +127,10 @@ public class Investment {
 		}
 	}
 
+	/**
+	 * Calculates the predicted profits for the investment based on the selected
+	 * coin and deposits.
+	 */
 	public void calculateInvestment() {
 		/*
 		 * Years Yearly profit Total Profit
@@ -91,7 +142,7 @@ public class Investment {
 		/*
 		 * Predicted Profit for Investment in Fast Coin
 		 * Years | YearlyProfit | TotalProfit
-		 * _________|___________________|_______________
+		 * ______|______________|_______________
 		 * 1 | $75 | $75
 		 * 2 | $225 | $300
 		 * 3 | $300 | $600
@@ -115,6 +166,12 @@ public class Investment {
 		yearThreeTotalProfit = yearOneProfit + yearTwoProfit + yearThreeProfit;
 	}
 
+	/**
+	 * Gets the predicted yearly profit for a specific year.
+	 * 
+	 * @param year The year for which the yearly profit is retrieved.
+	 * @return The predicted yearly profit for the specified year.
+	 */
 	public double getYearlyProfit(int year) {
 		return switch (year) {
 			case 1 -> yearOneProfit;
@@ -124,6 +181,12 @@ public class Investment {
 		};
 	}
 
+	/**
+	 * Gets the predicted total profit for a specific year.
+	 * 
+	 * @param year The year for which the total profit is retrieved.
+	 * @return The predicted total profit for the specified year.
+	 */
 	public double getTotalProfit(int year) {
 		return switch (year) {
 			case 1 -> yearOneTotalProfit;

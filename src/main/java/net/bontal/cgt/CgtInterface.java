@@ -1,37 +1,37 @@
 /*
-*   Author: Min Thu Khaing, Thet Paing Hmu
-
-*   Date: from 02-02-2024 to 05-02-2024
-*   Description: Main entry point for CGT calculation program. I know my code looks like haiku.
-*   GitHub: @pewriebontal, @LinVulpes
-* 	© 2024 Min Thu Khaing, Thet Paing Hmu. All rights reserved.
-*/
+ *   Author: Min Thu Khaing, Thet Paing Hmu
+ 
+ *   Date: from 02-02-2024 to 05-02-2024
+ *   Description: Main entry point for CGT calculation program. I know my code looks like haiku.
+ *   GitHub: @pewriebontal, @LinVulpes
+ * 	© 2024 Min Thu Khaing, Thet Paing Hmu. All rights reserved.
+ */
 
 /*
-*                       _oo0oo_
-*                      o8888888o
-*                      88" . "88
-*                      (| -_- |)
-*                      0\  =  /0
-*                    ___/`---'\___
-*                  .' \\|     |// '.
-*                 / \\|||  :  |||// \
-*                / _||||| -:- |||||- \
-*               |   | \\\  -  /// |   |
-*               | \_|  ''\---/''  |_/ |
-*               \  .-\__  '-'  ___/-. /
-*             ___'. .'  /--.--\  `. .'___
-*          ."" '<  `.___\_<|>_/___.' >' "".
-*         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
-*         \  \ `_.   \_ __\ /__ _/   .-` /  /
-*     =====`-.____`.___ \_____/___.-`___.-'=====
-*                       `=---='
-*
-*
-*     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*
-*               佛祖保佑         永无BUG
-*/
+ *                       _oo0oo_
+ *                      o8888888o
+ *                      88" . "88
+ *                      (| -_- |)
+ *                      0\  =  /0
+ *                    ___/`---'\___
+ *                  .' \\|     |// '.
+ *                 / \\|||  :  |||// \
+ *                / _||||| -:- |||||- \
+ *               |   | \\\  -  /// |   |
+ *               | \_|  ''\---/''  |_/ |
+ *               \  .-\__  '-'  ___/-. /
+ *             ___'. .'  /--.--\  `. .'___
+ *          ."" '<  `.___\_<|>_/___.' >' "".
+ *         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+ *         \  \ `_.   \_ __\ /__ _/   .-` /  /
+ *     =====`-.____`.___ \_____/___.-`___.-'=====
+ *                       `=---='
+ *
+ *
+ *     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *
+ *               佛祖保佑         永无BUG
+ */
 
 /*
  * Dear Sir,
@@ -58,11 +58,44 @@ package net.bontal.cgt;
 
 import java.util.*;
 
+/**
+ * The CgtInterface class serves as the main entry point for the Capital Gains
+ * Tax (CGT) calculation program.
+ * It interacts with the user to collect necessary information, performs
+ * calculations, and displays results.
+ *
+ * <p>
+ * This class includes methods to prompt the user for details such as name,
+ * salary, residency status, and investment information.
+ * It also calculates CGT, predicts profits for investment, and prints user
+ * data.
+ *
+ * <p>
+ * Copyright © 2024 Min Thu Khaing, Thet Paing Hmu.
+ * All rights reserved.
+ *
+ * @version 1.0
+ * @since 02-02-2024
+ * @author Min Thu Khaing
+ * @author Thet Paing Hmu
+ * @see User
+ * @see Investment
+ */
 public class CgtInterface {
+
+    /**
+     * Constructs a CgtInterface object.
+     */
+    CgtInterface() {
+
+    }
+
+    /**
+     * Runs the CGT calculation program.
+     */
     public void run() {
         Scanner console = new Scanner(System.in);
         User user;
-        boolean willInvest;
         user = new User();
 
         askUserDetails(user, console);
@@ -72,6 +105,8 @@ public class CgtInterface {
         user.calculateCgt();
 
         printCapitalGainsTax(user);
+
+        boolean willInvest;
 
         willInvest = askToInvest(user, console);
 
@@ -84,7 +119,17 @@ public class CgtInterface {
         console.close();
     }
 
-    /* Need to Test heavily */
+    /**
+     * Retrieves and validate input from the user.
+     *
+     * @param prompt         The message prompting the user for input.
+     * @param console        The Scanner object used for input.
+     * @param isName         Boolean value whether it's name or not.
+     * @param regex          The regular expression used to validate the input.
+     * @param invalidMessage The message displayed when the input does not match the
+     *                       regex.
+     * @return The validated input from the user.
+     */
     private String getValidatedInput(String prompt, Scanner console, boolean isName, String regex,
             String invalidMessage) {
         String input;
@@ -94,7 +139,7 @@ public class CgtInterface {
                 input = console.nextLine(); // using Scanner.nextLine() to accept
             /* space in Full Name, for example. "Natalia Galileo Oreo" */
             else
-                input = console.next();
+                input = console.next().toLowerCase();
             if (!input.matches(regex)) {
                 System.out.println(invalidMessage);
             }
@@ -102,6 +147,20 @@ public class CgtInterface {
         return input;
     }
 
+    /**
+     * Retrieves and validate numerical input from the user.
+     *
+     * @param minimum              The minimum allowed value for the input.
+     * @param maximum              The maximum allowed value for the input. (put -1
+     *                             to
+     *                             ignore maximum value check)
+     * @param acceptEqualToMinimum Boolean value whether going to accept equal
+     *                             amount to minimum amount.
+     * @param prompt               The message prompting the user for input.
+     * @param console              The Scanner object used for input.
+     * @param invalidMessage       The message displayed when the input is invalid.
+     * @return The validated numerical input from the user.
+     */
     private double getValidatedNumInput(double minimum, double maximum, boolean acceptEqualToMinimum, String prompt,
             Scanner console,
             String invalidMessage) {
@@ -122,8 +181,13 @@ public class CgtInterface {
                 || (maximum != -1 && value > maximum));
         return value;
     }
-    /* Ends here */
 
+    /**
+     * Asks the user for personal details and sets them in the User object.
+     *
+     * @param user    The User object to set the personal details.
+     * @param console The Scanner object to read user input.
+     */
     public void askUserDetails(User user, Scanner console) {
         boolean isElonMusksSon;
         String regexName;
@@ -164,6 +228,12 @@ public class CgtInterface {
         }
     }
 
+    /**
+     * Asks the user for income details and sets them in the User object.
+     *
+     * @param user    The User object to set the income details.
+     * @param console The Scanner object to read user input.
+     */
     public void askIncome(User user, Scanner console) {
         /*
          * IRS is coming bro....
@@ -200,6 +270,13 @@ public class CgtInterface {
         user.setYears(numberOfYearsHeld);
     }
 
+    /**
+     * Asks the user if they want to invest.
+     *
+     * @param user    The User object representing the user.
+     * @param console The Scanner object to read user input.
+     * @return true if the user wants to invest, false otherwise.
+     */
     public boolean askToInvest(User user, Scanner console) {
         /*
          * I really want to set function name ScamTheUser()
@@ -219,6 +296,12 @@ public class CgtInterface {
         return invest;
     }
 
+    /**
+     * Prompts the user to continue with investment and collects investment details.
+     *
+     * @param user    The User object representing the user.
+     * @param console The Scanner object for user input.
+     */
     public void continueInvestment(User user, Scanner console) {
         /*
          * He's scamming bro, careful!!
@@ -229,10 +312,6 @@ public class CgtInterface {
         double firstYearDeposit = 0; // I don't know should I use year1Deposit or yearOneDeposit or firstYearDeposit?
         double secondYearDeposit = 0;
         double thirdYearDeposit = 0;
-
-        // TODO: [Very Important AF] ask professor what should we do if the previous
-        // profit is less than 0.
-        // Nevermind, It was my mistake.
 
         firstYearDeposit = getValidatedNumInput(0, user.getActualProfit(),
                 false, "Enter initial investment amount (cannot exceed $" + user.getActualProfit() + "): $", console,
@@ -271,6 +350,13 @@ public class CgtInterface {
         System.out.println("You Selected " + getSelectedCoinName(user, user.getInvestCoinSelection()));
     }
 
+    /**
+     * Retrieves the name of the selected cryptocurrency based on user's choice.
+     *
+     * @param user     The User object representing the user.
+     * @param selected The integer representing the selected cryptocurrency.
+     * @return The name of the selected cryptocurrency.
+     */
     public String getSelectedCoinName(User user, int selected) {
         return switch (user.getInvestCoinSelection()) {
             case 1 -> "BestCoin";
@@ -284,11 +370,15 @@ public class CgtInterface {
         System.out.printf("%-8d|$%-21.2f|$%-14.2f\n", year, yearlyProfit, totalProfit);
     }
 
+    /**
+     * Prints the predicted profit for the investment.
+     *
+     * @param user The User object representing the user.
+     */
     public void printPredictedProfitForInvestment(User user) {
         /*
          * This function print Predicted Profit Table in a nice way.
          */
-
         System.out
                 .println("Predicted Profit for Investment in "
                         + getSelectedCoinName(user, user.getInvestCoinSelection()));
@@ -300,6 +390,11 @@ public class CgtInterface {
         }
     }
 
+    /**
+     * Prints the Capital Gains Tax the user is liable for.
+     *
+     * @param user The User object representing the user.
+     */
     public void printCapitalGainsTax(User user) {
         System.out.println();
 
@@ -311,6 +406,13 @@ public class CgtInterface {
         System.out.println();
     }
 
+    /**
+     * Prints all available user data.
+     *
+     * @param user       The User object representing the user.
+     * @param willInvest Boolean indicating whether the user will invest for the
+     *                   coins.
+     */
     public void printUserData(User user, boolean willInvest) {
         /* print all the available User data in the final */
 
@@ -339,6 +441,11 @@ public class CgtInterface {
             printPredictedProfitForInvestment(user);
     }
 
+    /**
+     * The main method to start the CGT calculation program.
+     *
+     * @param args The command-line arguments (not used in this program).
+     */
     public static void main(String[] args) {
         CgtInterface calc = new CgtInterface();
         calc.run();
