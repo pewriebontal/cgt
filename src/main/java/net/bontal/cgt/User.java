@@ -225,7 +225,7 @@ public class User {
         /*
          * Find the tax rate for Total Annual income as Tax rate.
          * 
-         * Tax rates -- residents
+         * Tax rates – residents
          * $0 – $18,200 0%
          * $18,201 – $45,000 19%
          * $45,001 – $120,000 32.5%

@@ -1,10 +1,10 @@
 /*
  *   Author: Min Thu Khaing, Thet Paing Hmu
  
- *   Date: from 02-02-2024 to 05-02-2024
+ *   Date: from 02-02-2024 to 19-02-2024
  *   Description: Main entry point for CGT calculation program. I know my code looks like haiku.
  *   GitHub: @pewriebontal, @LinVulpes
- * 	© 2024 Min Thu Khaing, Thet Paing Hmu. All rights reserved.
+ * 	 © 2024 Min Thu Khaing, Thet Paing Hmu. All rights reserved.
  */
 
 /*
@@ -36,11 +36,7 @@
 /*
  * Dear Sir,
  *
- *      Respectfully, if you're reading this, please forgive me for not commenting
- *  on all the lines of code. I find it really annoying to comment on every single
- *  line of code to explain what the functions and variables does, especially when using OOP,
- *  as it is self-explanatory already. I hope you can also relate to me.
- *  I find it really annoying to read and write code that is full of comments.
+ *      Feel my over-engineered code for capital gains tax calculator.
  *
  *  Sincerely,
  *  Min Thu Khaing
