@@ -81,6 +81,7 @@ import java.util.*;
  * @see User
  * @see Investment
  */
+
 public class CgtInterface {
 
     /**
@@ -136,10 +137,9 @@ public class CgtInterface {
         do {
             System.out.print(prompt);
             if (isName)
-                input = console.nextLine(); // using Scanner.nextLine() to accept
-            /* space in Full Name, for example. "Natalia Galileo Oreo" */
+                input = console.nextLine();
             else
-                input = console.next().toLowerCase();
+                input = console.nextLine().toLowerCase();
             if (!input.matches(regex)) {
                 System.out.println(invalidMessage);
             }
@@ -173,6 +173,7 @@ public class CgtInterface {
                 console.next();
             }
             value = console.nextDouble();
+            console.nextLine();
             if (value <= minimum && !acceptEqualToMinimum || value < minimum && acceptEqualToMinimum
                     || (maximum != -1 && value > maximum)) {
                 System.out.println(invalidMessage);
@@ -221,11 +222,7 @@ public class CgtInterface {
         String inputResident;
         inputResident = getValidatedInput("Are you resident of Australia? [yes/no] ", console, false, "^(yes|no|y|n)$",
                 "Invalid input. Please enter 'yes' or 'no'.");
-        if (inputResident.equals("yes") || inputResident.equals("y")) {
-            user.setResident(true);
-        } else {
-            user.setResident(false);
-        }
+        user.setResident(inputResident.matches("^(yes|y)$"));
     }
 
     /**
