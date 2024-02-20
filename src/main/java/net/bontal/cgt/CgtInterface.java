@@ -154,27 +154,28 @@ public class CgtInterface {
      *                             amount to minimum amount.
      * @param prompt               The message prompting the user for input.
      * @param console              The Scanner object used for input.
+     * @param regex                The regular expression used to validate the input.
      * @param invalidMessage       The message displayed when the input is invalid.
      * @return The validated numerical input from the user.
      */
     private double getValidatedNumInput(double minimum, double maximum, boolean acceptEqualToMinimum, String prompt,
-            Scanner console,
+            Scanner console, String regex,
             String invalidMessage) {
-        double value;
+        double value = 0;
+        String input;
         do {
             System.out.print(prompt);
-            while (!console.hasNextDouble()) {
-                System.out.println("Enter Positive Number Only!");
-                System.out.print(prompt);
-                console.next();
+            input = console.nextLine();
+            if (!input.matches(regex)) {
+                System.out.println("Please Enter a valid number in correct format!");
+                continue;
             }
-            value = console.nextDouble();
-            console.nextLine();
+            value = Double.parseDouble(input);
             if (value <= minimum && !acceptEqualToMinimum || value < minimum && acceptEqualToMinimum
                     || (maximum != -1 && value > maximum)) {
                 System.out.println(invalidMessage);
             }
-        } while (value <= minimum & !acceptEqualToMinimum || value < minimum && acceptEqualToMinimum
+        } while (value <= minimum && !acceptEqualToMinimum || value < minimum && acceptEqualToMinimum
                 || (maximum != -1 && value > maximum));
         return value;
     }
@@ -211,7 +212,7 @@ public class CgtInterface {
         /* Get and Set Salary */
         double salary;
         salary = getValidatedNumInput(0, -1, false, "Your Annual Salary? [input number only] ", console,
-                "Please enter a positive number for salary. You dont have job? Skill Issue!");
+                "[0-9]+(\\.[0-9]+)?", "Please enter a positive number for salary. You dont have job? Skill Issue!");
         user.setAnnualSalary(salary);
 
         /* Get and Set Residential Status */
@@ -237,7 +238,7 @@ public class CgtInterface {
         double buyingPrice;
 
         buyingPrice = getValidatedNumInput(0, -1, false, "Buying price [type in positive number] : $", console,
-                "Please enter a valid positive number.");
+                "[0-9]+(\\.[0-9]+)?", "Please enter a valid positive number.");
         user.setBuyingPrice(buyingPrice);
 
         /* Get Selling Price */
@@ -250,7 +251,7 @@ public class CgtInterface {
          * an error message is shown and ask again for selling price.
          */
         sellingPrice = getValidatedNumInput(buyingPrice, -1, false, "Selling price [type in positive number] : $",
-                console,
+                console, "[0-9]+(\\.[0-9]+)?",
                 "Please enter a value greater than Buying Price");
 
         user.setSellingPrice(sellingPrice);
@@ -258,7 +259,7 @@ public class CgtInterface {
         /* Get Years held */
         int numberOfYearsHeld;
         numberOfYearsHeld = (int) getValidatedNumInput(1, -1, true, "Number of years held [type in positive number] : ",
-                console,
+                console, "[0-9]+",
                 "Please enter a positive number greater than zero.");
         user.setYears(numberOfYearsHeld);
     }
@@ -308,6 +309,7 @@ public class CgtInterface {
 
         firstYearDeposit = getValidatedNumInput(0, user.getActualProfit(),
                 false, "Enter initial investment amount (cannot exceed $" + user.getActualProfit() + "): $", console,
+                "[0-9]+(\\.[0-9]+)?",
                 "Invalid input. Initial investment amount cannot exceed $" + user.getActualProfit() + ".");
 
         // Get and validate subsequent deposits
@@ -316,7 +318,7 @@ public class CgtInterface {
 
             deposit = getValidatedNumInput(0, -1,
                     true, "Enter investment amount after year " + (year - 1) + ": $", console,
-                    "Invalid input. Please enter a positive number.");
+                    "[0-9]+(\\.[0-9]+)?", "Invalid input. Please enter a positive number.");
             if (year == 2) {
                 secondYearDeposit = deposit;
             } else {
@@ -336,7 +338,7 @@ public class CgtInterface {
         System.out.println("3 for Fast Coin (predicted profit rates 15%)");
 
         coinSelection = (int) getValidatedNumInput(1, 3, true, "[type 1/2/3]: ", console,
-                "Invalid input. Please enter a number between 1 and 3.");
+                "[0-9]+", "Invalid input. Please enter a number between 1 and 3.");
 
         // Set coin selection in the user object
         user.setInvestCoinSelection(coinSelection);
