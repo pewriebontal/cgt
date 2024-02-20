@@ -154,7 +154,8 @@ public class CgtInterface {
      *                             amount to minimum amount.
      * @param prompt               The message prompting the user for input.
      * @param console              The Scanner object used for input.
-     * @param regex                The regular expression used to validate the input.
+     * @param regex                The regular expression used to validate the
+     *                             input.
      * @param invalidMessage       The message displayed when the input is invalid.
      * @return The validated numerical input from the user.
      */

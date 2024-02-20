@@ -109,7 +109,7 @@ public class Investment {
 			case 1 -> year1Deposit;
 			case 2 -> year2Deposit;
 			case 3 -> year3Deposit;
-			default -> 0.0;
+			default -> throw new IllegalStateException("Unexpected value: " + year);
 		};
 	}
 
@@ -124,6 +124,7 @@ public class Investment {
 			case 1 -> year1Deposit = inputDeposit;
 			case 2 -> year2Deposit = inputDeposit;
 			case 3 -> year3Deposit = inputDeposit;
+			default -> throw new IllegalStateException("Unexpected value: " + year);
 		}
 	}
 
