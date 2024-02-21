@@ -1,8 +1,8 @@
 /*
  *   Author: Min Thu Khaing, Thet Paing Hmu
  
- *   Date: from 02-02-2024 to 03-02-2024
- *   Description: Investment Class.
+ *   Date: 21-02-2024
+ *   Description: Investment Class represents an investment that the user plans to make over three years.
  *   GitHub: @pewriebontal, @LinVulpes
  * 	 © 2024 Min Thu Khaing, Thet Paing Hmu. All rights reserved.
  */
@@ -64,7 +64,7 @@ public class Investment {
 	private double year2Deposit;
 	private double year3Deposit;
 
-	int coinSelection;
+	private int coinSelection;
 
 	private double yearOneProfit;
 	private double yearTwoProfit;
@@ -75,14 +75,8 @@ public class Investment {
 	private double yearThreeTotalProfit;
 
 	/**
-	 * Constructs an Investment object.
-	 */
-	public Investment() {
-	}
-
-	/**
 	 * Sets the selected coin for investment.
-	 * 
+	 *
 	 * @param inputSelection The selected coin for investment.
 	 */
 	public void setCoinSelection(int inputSelection) {
@@ -91,7 +85,7 @@ public class Investment {
 
 	/**
 	 * Gets the selected coin for investment.
-	 * 
+	 *
 	 * @return The selected coin for investment.
 	 */
 	public int getCoinSelection() {
@@ -100,7 +94,7 @@ public class Investment {
 
 	/**
 	 * Gets the deposit for a specific year.
-	 * 
+	 *
 	 * @param year The year for which deposit is retrieved.
 	 * @return The deposit for the specified year.
 	 */
@@ -115,7 +109,7 @@ public class Investment {
 
 	/**
 	 * Sets the deposit for a specific year.
-	 * 
+	 *
 	 * @param inputDeposit The deposit amount to set.
 	 * @param year         The year for which the deposit is set.
 	 */
@@ -169,7 +163,7 @@ public class Investment {
 
 	/**
 	 * Gets the predicted yearly profit for a specific year.
-	 * 
+	 *
 	 * @param year The year for which the yearly profit is retrieved.
 	 * @return The predicted yearly profit for the specified year.
 	 */
@@ -184,7 +178,7 @@ public class Investment {
 
 	/**
 	 * Gets the predicted total profit for a specific year.
-	 * 
+	 *
 	 * @param year The year for which the total profit is retrieved.
 	 * @return The predicted total profit for the specified year.
 	 */

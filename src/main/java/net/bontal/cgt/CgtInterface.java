@@ -1,8 +1,8 @@
 /*
  *   Author: Min Thu Khaing, Thet Paing Hmu
  
- *   Date: from 02-02-2024 to 19-02-2024
- *   Description: Main entry point for CGT calculation program. I know my code looks like haiku.
+ *   Date: 21-02-2024
+ *   Description: Main entry point for CGT calculation program. I know our code looks like haiku.
  *   GitHub: @pewriebontal, @LinVulpes
  * 	 © 2024 Min Thu Khaing, Thet Paing Hmu. All rights reserved.
  */
@@ -36,10 +36,10 @@
 /*
  * Dear Sir,
  *
- *      Feel my over-engineered code for capital gains tax calculator.
+ *      Feel our over-engineered code for capital gains tax calculator.
  *
  *  Sincerely,
- *  Min Thu Khaing
+ *  Min Thu Khaing, Thet Paing Hmu
  */
 
 /*
@@ -49,7 +49,6 @@
  * the rest of the code filled with getter, setter, encapsulation and all that oop shits.
  *                                  commented by @pewriebontal on 05-02-2024.
  */
-
 package net.bontal.cgt;
 
 import java.util.*;
@@ -79,13 +78,6 @@ import java.util.*;
  */
 
 public class CgtInterface {
-
-    /**
-     * Constructs a CgtInterface object.
-     */
-    CgtInterface() {
-
-    }
 
     /**
      * Runs the CGT calculation program.
@@ -136,7 +128,7 @@ public class CgtInterface {
      * @return The validated input from the user.
      */
     private String getValidatedInput(String prompt, Scanner console, boolean isName, String regex,
-            String invalidMessage) {
+                                     String invalidMessage) {
         String input;
         do {
             System.out.print(prompt);
@@ -168,8 +160,8 @@ public class CgtInterface {
      * @return The validated numerical input from the user.
      */
     private double getValidatedNumInput(double minimum, double maximum, boolean acceptEqualToMinimum, String prompt,
-            Scanner console, String regex,
-            String invalidMessage) {
+                                        Scanner console, String regex,
+                                        String invalidMessage) {
         double value = 0;
         String input;
         do {
@@ -422,7 +414,7 @@ public class CgtInterface {
 
         /* User Details */
         System.out.println();
-        System.out.println("______________________________________________");
+        System.out.println("_______________________________________________");
         System.out.println();
         System.out.println("User Details");
 

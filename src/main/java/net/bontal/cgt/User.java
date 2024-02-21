@@ -1,8 +1,8 @@
 /*
  *   Author: Min Thu Khaing, Thet Paing Hmu
  
- *   Date: from 02-02-2024 to 03-02-2024
- *   Description: Fuck object oriented
+ *   Date: 21-02-2024
+ *   Description: The User class represents a user who is making an investment and provides methods to manage user data
  *   GitHub: @pewriebontal, @LinVulpes
  *   © 2024 Min Thu Khaing, Thet Paing Hmu. All rights reserved.
  */
@@ -77,7 +77,7 @@ public class User {
 
     /**
      * Gets the name of the user.
-     * 
+     *
      * @return The name of the user.
      */
     public String getName() {
@@ -86,7 +86,7 @@ public class User {
 
     /**
      * Sets the name of the user.
-     * 
+     *
      * @param inputName The name of the user.
      */
     public void setName(String inputName) {
@@ -95,7 +95,7 @@ public class User {
 
     /**
      * Gets the annual salary of the user.
-     * 
+     *
      * @return The annual salary of the user.
      */
     public double getAnnualSalary() {
@@ -104,7 +104,7 @@ public class User {
 
     /**
      * Sets the annual salary of the user.
-     * 
+     *
      * @param inputAnnualSalary The annual salary of the user.
      */
     public void setAnnualSalary(double inputAnnualSalary) {
@@ -113,7 +113,7 @@ public class User {
 
     /**
      * Gets the residency status of the user.
-     * 
+     *
      * @return True if the user is a resident, false otherwise.
      */
     public boolean getResident() {
@@ -122,7 +122,7 @@ public class User {
 
     /**
      * Sets the residency status of the user.
-     * 
+     *
      * @param inputResident True if the user is a resident, false otherwise.
      */
     public void setResident(boolean inputResident) {
@@ -131,7 +131,7 @@ public class User {
 
     /**
      * Gets the buying price of the investment.
-     * 
+     *
      * @return The buying price of the investment.
      */
     public double getBuyingPrice() {
@@ -140,7 +140,7 @@ public class User {
 
     /**
      * Sets the buying price of the investment.
-     * 
+     *
      * @param inputBuyingPrice The buying price of the investment.
      */
     public void setBuyingPrice(double inputBuyingPrice) {
@@ -149,7 +149,7 @@ public class User {
 
     /**
      * Gets the selling price of the investment.
-     * 
+     *
      * @return The selling price of the investment.
      */
     public double getSellingPrice() {
@@ -158,7 +158,7 @@ public class User {
 
     /**
      * Sets the selling price of the investment.
-     * 
+     *
      * @param inputSellingPrice The selling price of the investment.
      */
     public void setSellingPrice(double inputSellingPrice) {
@@ -167,7 +167,7 @@ public class User {
 
     /**
      * Gets the number of years the investment is held.
-     * 
+     *
      * @return The number of years the investment is held.
      */
     public int getYears() {
@@ -176,7 +176,7 @@ public class User {
 
     /**
      * Sets the number of years the investment is held.
-     * 
+     *
      * @param inputYears The number of years the investment is held.
      */
     public void setYears(int inputYears) {
@@ -185,7 +185,7 @@ public class User {
 
     /**
      * Sets the selected coin for future investment.
-     * 
+     *
      * @param inputCoin The selected coin for future investment.
      */
     public void setInvestCoinSelection(int inputCoin) {
@@ -194,7 +194,7 @@ public class User {
 
     /**
      * Gets the selected coin for future investment.
-     * 
+     *
      * @return The selected coin for future investment.
      */
     public int getInvestCoinSelection() {
@@ -224,7 +224,7 @@ public class User {
 
         /*
          * Find the tax rate for Total Annual income as Tax rate.
-         * 
+         *
          * Tax rates – residents
          * $0 – $18,200 0%
          * $18,201 – $45,000 19%
@@ -270,7 +270,7 @@ public class User {
 
     /**
      * Gets the deposit for a specific year from the investment.
-     * 
+     *
      * @param year The year for which deposit is retrieved.
      * @return The deposit for the specified year.
      */
@@ -280,7 +280,7 @@ public class User {
 
     /**
      * Sets the deposit for a specific year in the investment.
-     * 
+     *
      * @param inputDeposit The deposit amount to set.
      * @param year         The year for which the deposit is set.
      */
@@ -290,7 +290,7 @@ public class User {
 
     /**
      * Gets the tax rate applicable to the user.
-     * 
+     *
      * @return The tax rate applicable to the user.
      */
     public double getTaxRate() {
@@ -299,7 +299,7 @@ public class User {
 
     /**
      * Gets the calculated capital gains tax (CGT) applicable to the user.
-     * 
+     *
      * @return The calculated capital gains tax (CGT) applicable to the user.
      */
     public double getCgt() {
@@ -308,7 +308,7 @@ public class User {
 
     /**
      * Gets the actual profit after deducting CGT.
-     * 
+     *
      * @return The actual profit after deducting CGT.
      */
     public double getActualProfit() {
@@ -324,7 +324,7 @@ public class User {
 
     /**
      * Gets the predicted yearly profit for a specific year from the investment.
-     * 
+     *
      * @param year The year for which the predicted yearly profit is retrieved.
      * @return The predicted yearly profit for the specified year.
      */
@@ -334,7 +334,7 @@ public class User {
 
     /**
      * Gets the predicted total profit for a specific year from the investment.
-     * 
+     *
      * @param year The year for which the total profit is retrieved.
      * @return The predicted total profit for the specified year.
      */
