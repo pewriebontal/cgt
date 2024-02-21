@@ -112,6 +112,14 @@ public class CgtInterface {
             user.calculateInvestment();
             printPredictedProfitForInvestment(user);
         }
+
+        // Delaying by 1.3 sec to make it seems legit.
+        try {
+            Thread.sleep(1337);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
         printUserData(user, willInvest);
         console.close();
     }
@@ -413,6 +421,8 @@ public class CgtInterface {
         /* print all the available User data in the final */
 
         /* User Details */
+        System.out.println();
+        System.out.println("______________________________________________");
         System.out.println();
         System.out.println("User Details");
 
