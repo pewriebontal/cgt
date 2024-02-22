@@ -23,7 +23,7 @@ These instructions will get you a copy of the project up and running on your loc
 1. Clone the repository
 
 ```sh
-git clone https://github.com/pewriebontal/UON-SENG1110-Assignment-1.git cgt
+git clone https://github.com/pewriebontal/cgt.git
 ```
 
 2. Navigate into the project directory
