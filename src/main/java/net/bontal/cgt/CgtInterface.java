@@ -1,6 +1,5 @@
 /*
  *   Author: Min Thu Khaing, Thet Paing Hmu
- 
  *   Date: 21-02-2024
  *   Description: Main entry point for CGT calculation program. I know our code looks like haiku.
  *   GitHub: @pewriebontal, @LinVulpes
@@ -162,7 +161,7 @@ public class CgtInterface {
     private double getValidatedNumInput(double minimum, double maximum, boolean acceptEqualToMinimum, String prompt,
                                         Scanner console, String regex,
                                         String invalidMessage) {
-        double value = 0;
+        double value = -1; //Setting value to -1 to pass the minimum value check, also compiler check, never set it to 0,
         String input;
         do {
             System.out.print(prompt);

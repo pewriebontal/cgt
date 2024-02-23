@@ -1,6 +1,5 @@
 /*
  *   Author: Min Thu Khaing, Thet Paing Hmu
- 
  *   Date: 21-02-2024
  *   Description: Investment Class represents an investment that the user plans to make over three years.
  *   GitHub: @pewriebontal, @LinVulpes

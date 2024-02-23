@@ -1,6 +1,5 @@
 /*
  *   Author: Min Thu Khaing, Thet Paing Hmu
- 
  *   Date: 21-02-2024
  *   Description: The User class represents a user who is making an investment and provides methods to manage user data
  *   GitHub: @pewriebontal, @LinVulpes
