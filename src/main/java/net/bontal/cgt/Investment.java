@@ -1,6 +1,6 @@
 /*
  *   Author: Min Thu Khaing, Thet Paing Hmu
- *   Date: 21-02-2024
+ *   Date: 29-03-2024
  *   Description: Investment Class represents an investment that the user plans to make over three years.
  *   GitHub: @pewriebontal, @LinVulpes
  * 	 © 2024 Min Thu Khaing, Thet Paing Hmu. All rights reserved.
@@ -50,7 +50,7 @@ package net.bontal.cgt;
  * <p>
  * Copyright © 2024 Min Thu Khaing, Thet Paing Hmu. All rights reserved.
  *
- * @version 1.0
+ * @version 2.0
  * @since 02-02-2024
  * @author Min Thu Khaing
  * @author Thet Paing Hmu
@@ -74,21 +74,46 @@ public class Investment {
 	private double yearThreeTotalProfit;
 
 	/**
-	 * Sets the selected coin for investment.
-	 *
-	 * @param inputSelection The selected coin for investment.
+	 * Default constructor for Investment class.
 	 */
-	public void setCoinSelection(int inputSelection) {
-		coinSelection = inputSelection;
+	public Investment() {
+		this.year1Deposit = 0.0;
+		this.year2Deposit = 0.0;
+		this.year3Deposit = 0.0;
+
+		this.coinSelection = 0;
+
+		this.yearOneProfit = 0.0;
+		this.yearTwoProfit = 0.0;
+		this.yearThreeProfit = 0.0;
+
+		this.yearOneTotalProfit = 0.0;
+		this.yearTwoTotalProfit = 0.0;
+		this.yearThreeTotalProfit = 0.0;
 	}
 
 	/**
-	 * Gets the selected coin for investment.
+	 * Parameterized constructor for Investment class.
 	 *
-	 * @return The selected coin for investment.
+	 * @param year1Deposit  The deposit for the first year.
+	 * @param year2Deposit  The deposit for the second year.
+	 * @param year3Deposit  The deposit for the third year.
+	 * @param coinSelection The selected coin for investment.
 	 */
-	public int getCoinSelection() {
-		return (coinSelection);
+	public Investment(double year1Deposit, double year2Deposit, double year3Deposit, int coinSelection) {
+		this.year1Deposit = year1Deposit;
+		this.year2Deposit = year2Deposit;
+		this.year3Deposit = year3Deposit;
+
+		this.coinSelection = coinSelection;
+
+		this.yearOneProfit = 0.0;
+		this.yearTwoProfit = 0.0;
+		this.yearThreeProfit = 0.0;
+
+		this.yearOneTotalProfit = 0.0;
+		this.yearTwoTotalProfit = 0.0;
+		this.yearThreeTotalProfit = 0.0;
 	}
 
 	/**
@@ -99,9 +124,9 @@ public class Investment {
 	 */
 	public double getDeposit(int year) {
 		return switch (year) {
-			case 1 -> year1Deposit;
-			case 2 -> year2Deposit;
-			case 3 -> year3Deposit;
+			case 1 -> this.year1Deposit;
+			case 2 -> this.year2Deposit;
+			case 3 -> this.year3Deposit;
 			default -> throw new IllegalStateException("Unexpected value: " + year);
 		};
 	}
@@ -114,18 +139,66 @@ public class Investment {
 	 */
 	public void setDeposit(double inputDeposit, int year) {
 		switch (year) {
-			case 1 -> year1Deposit = inputDeposit;
-			case 2 -> year2Deposit = inputDeposit;
-			case 3 -> year3Deposit = inputDeposit;
+			case 1 -> this.year1Deposit = inputDeposit;
+			case 2 -> this.year2Deposit = inputDeposit;
+			case 3 -> this.year3Deposit = inputDeposit;
 			default -> throw new IllegalStateException("Unexpected value: " + year);
 		}
+	}
+
+	/**
+	 * Gets the selected coin for investment.
+	 *
+	 * @return The selected coin for investment.
+	 */
+	public int getCoinSelection() {
+		return (this.coinSelection);
+	}
+
+	/**
+	 * Sets the selected coin for investment.
+	 *
+	 * @param inputSelection The selected coin for investment.
+	 */
+	public void setCoinSelection(int inputSelection) {
+		this.coinSelection = inputSelection;
+	}
+
+	/**
+	 * Gets the predicted yearly profit for a specific year.
+	 *
+	 * @param year The year for which the yearly profit is retrieved.
+	 * @return The predicted yearly profit for the specified year.
+	 */
+	public double getYearlyProfit(int year) {
+		return switch (year) {
+			case 1 -> this.yearOneProfit;
+			case 2 -> this.yearTwoProfit;
+			case 3 -> this.yearThreeProfit;
+			default -> 0.0;
+		};
+	}
+
+	/**
+	 * Gets the predicted total profit for a specific year.
+	 *
+	 * @param year The year for which the total profit is retrieved.
+	 * @return The predicted total profit for the specified year.
+	 */
+	public double getTotalProfit(int year) {
+		return switch (year) {
+			case 1 -> this.yearOneTotalProfit;
+			case 2 -> this.yearTwoTotalProfit;
+			case 3 -> this.yearThreeTotalProfit;
+			default -> 0.0;
+		};
 	}
 
 	/**
 	 * Calculates the predicted profits for the investment based on the selected
 	 * coin and deposits.
 	 */
-	public void calculateInvestment() {
+	public void calculateInvestmentProfits() {
 		/*
 		 * Years Yearly profit Total Profit
 		 * 1 | $500* 0.15 = $75 | $75
@@ -151,42 +224,13 @@ public class Investment {
 			default -> throw new IllegalStateException("Unexpected value: " + coinSelection);
 		};
 
-		yearOneProfit = (year1Deposit) * predictedProfitRate;
-		yearTwoProfit = (year1Deposit + year2Deposit) * predictedProfitRate;
-		yearThreeProfit = (year1Deposit + year2Deposit + year3Deposit) * predictedProfitRate;
+		this.yearOneProfit = (year1Deposit) * predictedProfitRate;
+		this.yearTwoProfit = (year1Deposit + year2Deposit) * predictedProfitRate;
+		this.yearThreeProfit = (year1Deposit + year2Deposit + year3Deposit) * predictedProfitRate;
 
-		yearOneTotalProfit = yearOneProfit;
-		yearTwoTotalProfit = yearOneProfit + yearTwoProfit;
-		yearThreeTotalProfit = yearOneProfit + yearTwoProfit + yearThreeProfit;
+		this.yearOneTotalProfit = yearOneProfit;
+		this.yearTwoTotalProfit = yearOneProfit + yearTwoProfit;
+		this.yearThreeTotalProfit = yearOneProfit + yearTwoProfit + yearThreeProfit;
 	}
 
-	/**
-	 * Gets the predicted yearly profit for a specific year.
-	 *
-	 * @param year The year for which the yearly profit is retrieved.
-	 * @return The predicted yearly profit for the specified year.
-	 */
-	public double getYearlyProfit(int year) {
-		return switch (year) {
-			case 1 -> yearOneProfit;
-			case 2 -> yearTwoProfit;
-			case 3 -> yearThreeProfit;
-			default -> 0.0;
-		};
-	}
-
-	/**
-	 * Gets the predicted total profit for a specific year.
-	 *
-	 * @param year The year for which the total profit is retrieved.
-	 * @return The predicted total profit for the specified year.
-	 */
-	public double getTotalProfit(int year) {
-		return switch (year) {
-			case 1 -> yearOneTotalProfit;
-			case 2 -> yearTwoTotalProfit;
-			case 3 -> yearThreeTotalProfit;
-			default -> 0.0;
-		};
-	}
 }
