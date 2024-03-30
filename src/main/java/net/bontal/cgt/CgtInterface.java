@@ -295,6 +295,12 @@ public class CgtInterface {
             int accountNumber;
             accountNumber = (int) this.getValidatedNumInput(1, 2, true, "Enter account number: ", console, "[0-2]+",
                     "Invalid account number.");
+            if(accountNumber > user.getNumberOfAccounts()) {
+                this.displayMessage("Account not found.", "red");
+                this.addDelay(1337);
+                this.pressAnyKeyToContinue();
+                return;
+            }
             this.functionDisplayInvestment(user.getInvestmentAccount(accountNumber - 1));
             this.addDelay(1337);
             this.pressAnyKeyToContinue();
@@ -323,16 +329,14 @@ public class CgtInterface {
                 int accountNumber;
                 accountNumber = (int) this.getValidatedNumInput(1, 2, true, "Enter account number: ", console, "[0-2]+",
                         "Invalid account number.");
-                this.showDotAnimation("Deleting Investment Account", "blue");
                 if (user.deleteInvestmentAccount(accountNumber - 1) == 0) {
+                    this.showDotAnimation("Deleting Investment Account", "blue");
                     this.displayMessage("Investment account deleted successfully.", "green");
-                    this.addDelay(1337);
-                    this.pressAnyKeyToContinue();
                 } else {
                     this.displayMessage("Account not found.", "red");
-                    this.addDelay(1337);
-                    this.pressAnyKeyToContinue();
                 }
+                this.addDelay(1337);
+                this.pressAnyKeyToContinue();
             }
         }
 
