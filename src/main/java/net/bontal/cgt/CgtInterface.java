@@ -203,14 +203,14 @@ public class CgtInterface {
         user = this.findUserByName(getValidatedInput("Enter name: ", console, true, "[a-zA-Z ]+", "Invalid name."));
         this.showDotAnimation("🔎 Searching User", "blue");
         if (user == null) {
-            this.displayMessage("User not found", "red");
+            this.displayMessage("🥲 User not found", "red");
             this.addDelay(1337);
             this.pressAnyKeyToContinue();
             return;
         } else {
-            this.showDotAnimation("Deleting User", "blue");
+            this.showDotAnimation("🙈 Deleting User", "blue");
             this.functionDeleteUser(user);
-            this.displayMessage("User deleted successfully.", "green");
+            this.displayMessage("🔪 User deleted successfully.", "green");
             this.addDelay(1337);
             this.pressAnyKeyToContinue();
         }
@@ -224,7 +224,7 @@ public class CgtInterface {
 
         this.showDotAnimation("🔎 Searching User", "blue");
         if (user == null) {
-            this.displayMessage("User not found.", "red");
+            this.displayMessage("🤨 User not found.", "red");
             this.addDelay(1337);
             this.pressAnyKeyToContinue();
             return;
@@ -247,26 +247,26 @@ public class CgtInterface {
         user = this.findUserByName(getValidatedInput("Enter name: ", console, true, "[a-zA-Z ]+", "Invalid name."));
         this.showDotAnimation("🔎 Searching User", "blue");
         if (user == null) {
-            this.displayMessage("User not found", "red");
+            this.displayMessage("💀 User not found", "red");
             this.addDelay(500);
             this.pressAnyKeyToContinue();
             return;
         } else {
             this.displayMessage("User found", "green");
             if (user.getAvailableBalance() == 0) {
-                this.displayMessage("Bro! you're too broke to invest, go get a job first", "red");
+                this.displayMessage("🫤 Bro! you're too broke to invest, go get a job first", "red");
                 this.addDelay(1337);
                 this.pressAnyKeyToContinue();
                 return;
             } else if (user.getNumberOfAccounts() == 2) {
-                this.displayMessage("Maximum number of investment accounts reached.", "red");
+                this.displayMessage("🤑 Maximum number of investment accounts reached.", "red");
                 this.addDelay(1337);
                 this.pressAnyKeyToContinue();
                 return;
             }
             this.showDotAnimation("Adding Investment", "blue");
             user.addNewInvestmentAccount(this.createInvestmentAccount(user.getAvailableBalance()));
-            this.displayMessage("Investment added successfully.", "green");
+            this.displayMessage("🚀🌕 Investment added successfully.", "green");
             this.addDelay(1337);
             this.pressAnyKeyToContinue();
         }
@@ -279,14 +279,14 @@ public class CgtInterface {
 
         user = this.findUserByName(getValidatedInput("Enter name: ", console, true, "[a-zA-Z ]+", "Invalid name."));
         if (user == null) {
-            this.displayMessage("User not found.", "red");
+            this.displayMessage("🥲 User not found.", "red");
             this.addDelay(1337);
             this.pressAnyKeyToContinue();
             return;
         } else {
 
             if (user.getNumberOfAccounts() == 0) {
-                this.displayMessage("No investment account found for the user: " + user.getName(), "red");
+                this.displayMessage("🫤 No investment account found for the user: " + user.getName(), "red");
                 this.addDelay(1337);
                 this.pressAnyKeyToContinue();
                 return;
@@ -296,7 +296,7 @@ public class CgtInterface {
             accountNumber = (int) this.getValidatedNumInput(1, 2, true, "Enter account number: ", console, "[0-2]+",
                     "Invalid account number.");
             if(accountNumber > user.getNumberOfAccounts()) {
-                this.displayMessage("Account not found.", "red");
+                this.displayMessage("🥴 Account not found.", "red");
                 this.addDelay(1337);
                 this.pressAnyKeyToContinue();
                 return;
@@ -315,13 +315,13 @@ public class CgtInterface {
 
         user = this.findUserByName(getValidatedInput("Enter name: ", console, true, "[a-zA-Z ]+", "Invalid name."));
         if (user == null) {
-            this.displayMessage("User not found.", "red");
+            this.displayMessage("🫨 User not found.", "red");
             this.addDelay(1337);
             this.pressAnyKeyToContinue();
             return;
         } else {
             if (user.getNumberOfAccounts() == 0) {
-                this.displayMessage("No investment account found for the user: " + user.getName(), "red");
+                this.displayMessage("🫤 No investment account found for the user: " + user.getName(), "red");
                 this.addDelay(1337);
                 this.pressAnyKeyToContinue();
                 return;
@@ -330,10 +330,10 @@ public class CgtInterface {
                 accountNumber = (int) this.getValidatedNumInput(1, 2, true, "Enter account number: ", console, "[0-2]+",
                         "Invalid account number.");
                 if (user.deleteInvestmentAccount(accountNumber - 1) == 0) {
-                    this.showDotAnimation("Deleting Investment Account", "blue");
-                    this.displayMessage("Investment account deleted successfully.", "green");
+                    this.showDotAnimation("🙈 Deleting Investment Account", "blue");
+                    this.displayMessage("💣 Investment account deleted successfully.", "green");
                 } else {
-                    this.displayMessage("Account not found.", "red");
+                    this.displayMessage("🙈 Account not found.", "red");
                 }
                 this.addDelay(1337);
                 this.pressAnyKeyToContinue();
@@ -343,15 +343,15 @@ public class CgtInterface {
     }
 
     private void mainMenuSaveToFile() {
-        this.showDotAnimation("Saving Data", "blue");
+        this.showDotAnimation("💿 Saving Data", "blue");
         this.functionSaveToFile();
         this.addDelay(1337);
-        this.displayMessage("Data saved successfully.", "green");
+        this.displayMessage("💾 Data saved successfully.", "green");
         this.pressAnyKeyToContinue();
     }
 
     private void mainMenuExitProgram() {
-        this.displayMessage("Exiting Program...", "red");
+        this.displayMessage("👋 Exiting Program...", "red");
         this.addDelay(1337);
         this.functionExitProgram();
     }
@@ -368,7 +368,7 @@ public class CgtInterface {
             users[userCount] = new User(name, salary, isResident, buyingPrice, sellingPrice, numberOfYearsHeld);
             userCount++;
         } else {
-            this.displayMessage("Maximum number of users reached.", "red");
+            this.displayMessage("🥴 Maximum number of users reached.", "red");
         }
     }
 
@@ -400,9 +400,9 @@ public class CgtInterface {
     // NOTE TO SELF : MAIN PROGRAM REQUREMENT NO.4
     private void functionDisplayAllUsers() {
 
+        this.showDotAnimation("🧠 Loading", "blue");
         if (userCount == 0) {
-            this.showDotAnimation("Loading", "blue");
-            this.displayMessage("No users found.", "red");
+            this.displayMessage("😭 No users found.", "red");
             this.addDelay(1337);
             this.pressAnyKeyToContinue();
             return;
@@ -447,12 +447,12 @@ public class CgtInterface {
 
         try {
             if (file.createNewFile()) {
-                System.out.println("File created: " + file.getName());
+                System.out.println("🍒 File created: " + file.getName());
             } else {
-                System.out.println("File already exists. Overwriting...");
+                System.out.println("🙈 File already exists. Overwriting...");
             }
         } catch (Exception e) {
-            System.out.println("An error occurred.");
+            System.out.println("👻 An error occurred.");
             e.printStackTrace();
 
         }
