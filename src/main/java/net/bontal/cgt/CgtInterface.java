@@ -29,7 +29,7 @@
  *
  *     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
- *               佛祖保佑         永无BUG
+ *               佛祖保佑       永无BUG
  */
 
 /*
@@ -41,6 +41,7 @@
  *  Min Thu Khaing, Thet Paing Hmu
  */
 
+
 /*
  * This comment goes to God or whatever/whoever created us...
  * I really hate object-oriented programming.
@@ -51,8 +52,9 @@
 package net.bontal.cgt;
 
 import java.io.File;
-import java.io.Writer;
 import java.util.*;
+import java.io.FileWriter;
+import java.util.ArrayList;
 
 /**
  * The CgtInterface class serves as the main entry point for the Capital Gains
@@ -122,7 +124,7 @@ public class CgtInterface {
 
             users[0].addNewInvestmentAccount(new Investment(100, 2000, 3000, 1));
             users[0].addNewInvestmentAccount(new Investment(100, 2000, 3000, 2));
-            users[1].addNewInvestmentAccount(new Investment(100, 2000, 3000, 2));
+            users[1].addNewInvestmentAccount(new Investment(100, 2000, 3333, 2));
             users[2].addNewInvestmentAccount(new Investment(100, 3000, 4000, 3));
             users[3].addNewInvestmentAccount(new Investment(100, 4000, 5000, 1));
         }
@@ -344,7 +346,7 @@ public class CgtInterface {
 
     private void mainMenuSaveToFile() {
         this.showDotAnimation("💿 Saving Data", "blue");
-        this.functionSaveToFile();
+        this.functionSaveToFile(users);
         this.addDelay(1337);
         this.displayMessage("💾 Data saved successfully.", "green");
         this.pressAnyKeyToContinue();
@@ -417,7 +419,7 @@ public class CgtInterface {
     // NOTE TO SELF : MAIN PROGRAM REQUREMENT NO.5
     private void functionDisplayInvestment(Investment investment) {
         /*
-         * This function print Investedment ammount and Predicted Profit Table in a nice
+         * This function print Investment amount and Predicted Profit Table in a nice
          * way.
          */
 
@@ -438,23 +440,80 @@ public class CgtInterface {
             this.printTableRow(year, investment.getYearlyProfit(year), investment.getTotalProfit(year));
         }
     }
-
     // NOTE TO SELF : MAIN PROGRAM REQUREMENT NO.6
-    private void functionSaveToFile() {
+    private void functionSaveToFile(User[] users) {
         // Real function to Save all the user data to a file will be implemented here.
-
         File file = new File("user_data.txt");
 
         try {
             if (file.createNewFile()) {
-                System.out.println("🍒 File created: " + file.getName());
+                System.out.println("File created: " + file.getName());
             } else {
                 System.out.println("🙈 File already exists. Overwriting...");
             }
+
+            FileWriter writer = new FileWriter(file);
+            //boolean usersExist = false; //Check user existence
+
+            if (users.length == 0) {
+                writer.write("No Users");
+            }
+            else {
+                for (User user : users) {
+                    if (user != null) {
+                        writer.write("\nUsers Profile\n");
+                        writer.write("=============================\n");
+                        writer.write("Name ⇒ " + user.getName() + "\n");
+                        writer.write("Annual Salary ⇒ " + user.getAnnualSalary() + "\n");
+                        writer.write("Residential Status ⇒ " + (user.getResident() ? "Yes" : "No") + "\n");
+                        writer.write("");
+                        /* PRINT INVESTMENT */
+                        writer.write("\nCryptocurrency\n");
+                        writer.write("Buying Price ⇒ $" + user.getBuyingPrice() + "\n");
+                        writer.write("Selling Price ⇒ $" + user.getSellingPrice() + "\n");
+                        writer.write("Number of years held ⇒ " + user.getYearsHold() + "\n");
+                        writer.write("\n");
+
+                        // Print capital gain tax under each user's profile
+                        writer.write("Capital Gains Tax\n");
+                        writer.write("Tax Rate ⇒ " + String.format("%.2f%%\n", user.getTaxRate() * 100));
+                        writer.write("Capital Gains Tax ⇒ " + String.format("%.2f\n", user.getCgt()));
+                        writer.write("Profit ⇒ " + String.format("%.2f\n", user.getActualProfit()));
+                        writer.write("\n");
+
+                        writer.write("Number of investment accounts ⇒ " + user.getNumberOfAccounts() + "\n"); // Spacer
+                        //Investment
+                        for (int index = 0; index < user.getNumberOfAccounts(); index++) {
+                            Investment investment = user.getInvestmentAccount(index);
+                            writer.write("\nAccount Number : " + (index + 1));
+                            if (investment != null) {
+                                writer.write("\nInvestment Details\n");
+                                writer.write("\n");
+                                for (int year = 1; year <= 3; year++) {
+                                    writer.write("Year " + year + " Deposit : $" + investment.getDeposit(year) + "\n");
+                                }
+                                writer.write("\n");
+                                writer.write("Predicted Profit for Investment in " + getSelectedCoinName(investment) + "\n");
+                                writer.write("\n");
+                                writer.write(String.format("%-8s|%-22s|%-15s\n", "Years", "YearlyProfit", "TotalProfit"));
+                                writer.write("________|______________________|_______________\n");
+
+                                for (int year = 1; year <= 3; year++) {
+                                    writer.write(String.format("%-8d|%-22.2f|%-15.2f\n", year, investment.getYearlyProfit(year), investment.getTotalProfit(year)));
+                                }
+                            } else {
+                                writer.write("No investment account found for the user\n");
+                            }
+                        }
+                    }
+                }
+                //if (!usersExist) { writer.write("NO USERS"); }
+            }
+            writer.close ();
+            System.out.println("The Data has ben saved to UserData.txt");
         } catch (Exception e) {
             System.out.println("👻 An error occurred.");
             e.printStackTrace();
-
         }
 
         // Writing to the file
@@ -653,7 +712,7 @@ public class CgtInterface {
         System.out.println(); // Spacer
 
         /* Print Avaliable Balance */
-        this.displayMessage("Avaliable Balance : " + user.getAvailableBalance(), "yellow");
+        this.displayMessage("Available Balance : " + user.getAvailableBalance(), "yellow");
 
         System.out.println(); // Spacer
 
@@ -685,13 +744,6 @@ public class CgtInterface {
         System.out.printf("%-8d|$%-21.2f|$%-14.2f\n", num1, num2, num3);
     }
 
-    /**
-     * Retrieves the name of the selected cryptocurrency based on user's choice.
-     *
-     * @param user     The User object representing the user.
-     * @param selected The integer representing the selected cryptocurrency.
-     * @return The name of the selected cryptocurrency.
-     */
     private String getSelectedCoinName(Investment investment) {
         return switch (investment.getCoinSelection()) {
             case 1 -> "BestCoin";
