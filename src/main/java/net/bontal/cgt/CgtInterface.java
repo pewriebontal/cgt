@@ -498,7 +498,7 @@ public class CgtInterface {
      */
     private User findUserByName(String name) {
         for (int i = 0; i < userCount; i++) {
-            if (users[i].getName().equals(name)) {
+            if (users[i].getName().equalsIgnoreCase(name)) {
                 return users[i];
             }
         }
