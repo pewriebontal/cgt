@@ -1,6 +1,8 @@
 plugins {
     id("java")
     application
+    id("org.graalvm.buildtools.native") version "0.10.1"
+
 }
 
 group = "net.bontal"
@@ -31,4 +33,20 @@ tasks.test {
 tasks.register("generateJavadoc", Javadoc::class) {
     source = fileTree("src/main/java/net/bontal/cgt")
     destinationDir = file("doc")
+}
+
+graalvmNative {
+    binaries {
+        named("main") {
+            imageName.set("cgt-calc")
+            mainClass.set("net.bontal.cgt.CgtInterface")
+            buildArgs.add("-O4")
+        }
+        named("test") {
+            buildArgs.add("-O0")
+        }
+    }
+    binaries.all {
+        buildArgs.add("--verbose")
+    }
 }

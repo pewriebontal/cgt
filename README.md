@@ -15,8 +15,9 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-- [Java Development Kit (JDK)](https://developer.ibm.com/languages/java/semeru-runtimes/downloads/)
-- [Integrated Development Environment (IDE) of   ̶y̶o̶u̶r̶ ̶c̶h̶o̶i̶c̶e̶](https://www.jetbrains.com/idea/download/)
+- [Java Development Kit (JDK) version should be at least 11](https://developer.ibm.com/languages/java/semeru-runtimes/downloads/)
+- [Integrated Development Environment (IDE) of ̶y̶o̶u̶r̶ ̶c̶h̶o̶i̶c̶e̶](https://www.jetbrains.com/idea/download/)
+- [Kopi C Peng](https://kopi.guide/)
 
 ### Installing
 

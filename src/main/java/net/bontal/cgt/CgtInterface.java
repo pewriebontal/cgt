@@ -50,6 +50,7 @@
  */
 package net.bontal.cgt;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -68,51 +69,614 @@ import java.util.*;
  * Copyright © 2024 Min Thu Khaing, Thet Paing Hmu.
  * All rights reserved.
  *
- * @version 1.0
+ * @version 2.0
  * @since 02-02-2024
  * @author Min Thu Khaing
  * @author Thet Paing Hmu
  * @see User
  * @see Investment
  */
-
 public class CgtInterface {
 
+    static Scanner console;
+    private final User[] users;
+    private int userCount;
+
+    /* ========== Constructor Starts ============== */
+
     /**
-     * Runs the CGT calculation program.
+     * Default constructor for the CgtInterface class.
+     * Initializes the users array with a size of 5 and userCount to 0.
      */
-    public void run() {
-        Scanner console = new Scanner(System.in);
+    public CgtInterface() {
+        this.users = new User[5];
+        this.userCount = 0;
+        console = new Scanner(System.in);
+    }
+
+    /**
+     * Parameterized constructor for the CgtInterface class.
+     * Initializes the users array with a size of 5 and userCount to 0.
+     * If the devBuild parameter is true, it adds some users and investment accounts
+     * for testing purposes.
+     *
+     * @param devBuild A boolean value to determine if the program is in development
+     *                 mode.
+     */
+    public CgtInterface(boolean devBuild) {
+        this.users = new User[5];
+        this.userCount = 0;
+        console = new Scanner(System.in);
+
+        if (devBuild) {
+            // Development Build: Add some users and investment accounts
+            // for testing purposes.
+            // This will be removed in the final build.
+
+            users[0] = new User("Alice", 50000, true, 1000, 2000, 2);
+            users[1] = new User("Bob", 60000, false, 2000, 3000, 3);
+            users[2] = new User("Charlie", 70000, true, 3000, 4000, 1);
+            users[3] = new User("Dave", 80000, false, 4000, 5000, 4);
+            userCount = 4;
+
+            users[0].addNewInvestmentAccount(new Investment(100, 2000, 3000, 1));
+            users[0].addNewInvestmentAccount(new Investment(100, 2000, 3000, 2));
+            users[1].addNewInvestmentAccount(new Investment(100, 2000, 3000, 2));
+            users[2].addNewInvestmentAccount(new Investment(100, 3000, 4000, 3));
+            users[3].addNewInvestmentAccount(new Investment(100, 4000, 5000, 1));
+        }
+    }
+
+    /* ========== Constructor Ends ============== */
+
+    /* ========== Main Menu Functions Starts ============== */
+
+    private void mainMenuAddUser() {
+        String name;
+        double salary;
+        boolean isResident;
+
+        double buyingPrice;
+        double sellingPrice;
+        int numberOfYearsHeld;
+
+        name = null;
+        salary = 0;
+        isResident = false;
+
+        buyingPrice = 0;
+        sellingPrice = 0;
+        numberOfYearsHeld = 0;
+
+        if (userCount == 5) {
+            this.displayMessage("Maximum number of users reached.", "red");
+            this.addDelay(1337);
+            this.pressAnyKeyToContinue();
+            return;
+        }
+
+        name = this.getValidatedInput("What's your name? [put your name hit enter] ", console, true, "[a-zA-Z ]+",
+                "Please enter a valid name (letters only, no numbers or special characters).");
+
+        // check if user already exists
+        for (int i = 0; i < userCount; i++) {
+            if (users[i].getName().equals(name)) {
+                this.displayMessage("ERROR: User already exists", "red");
+                this.addDelay(1377);
+                this.pressAnyKeyToContinue();
+                return;
+            }
+        }
+
+        salary = this.getValidatedNumInput(0, -1, false, "Your Annual Salary? [input number only] ", console,
+                "[0-9]+(\\.[0-9]+)?", "Please enter a positive number for salary. You dont have job? Skill Issue!");
+
+        isResident = this
+                .getValidatedInput("Are you resident of Australia? [yes/no] ", console, false, "^(yes|no|y|n)$",
+                        "Invalid input. Please enter 'yes' or 'no'.")
+                .matches("^(yes|y)$");
+
+        buyingPrice = this.getValidatedNumInput(0, -1, false, "Buying price [type in positive number] : $", console,
+                "[0-9]+(\\.[0-9]+)?", "Please enter a valid positive number.");
+
+        sellingPrice = this.getValidatedNumInput(buyingPrice, -1, false, "Selling price [type in positive number] : $",
+                console, "[0-9]+(\\.[0-9]+)?",
+                "Please enter a value greater than Buying Price");
+
+        numberOfYearsHeld = (int) this.getValidatedNumInput(1, -1, true,
+                "Number of years held [type in positive number] : ",
+                console, "[0-9]+",
+                "Please enter a positive number greater than zero.");
+
+        this.showDotAnimation("Adding User", "blue");
+        this.functionAddUser(name, salary, isResident, buyingPrice, sellingPrice, numberOfYearsHeld);
+        this.displayMessage("User added successfully.", "green");
+        this.addDelay(1377);
+        this.pressAnyKeyToContinue();
+    }
+
+    private void MainMenuDeleteUser() {
         User user;
-        user = new User();
+        user = null;
 
-        askUserDetails(user, console);
+        user = this.findUserByName(getValidatedInput("Enter name: ", console, true, "[a-zA-Z ]+", "Invalid name."));
+        this.showDotAnimation("🔎 Searching User", "blue");
+        if (user == null) {
+            this.displayMessage("🥲 User not found", "red");
+            this.addDelay(1337);
+            this.pressAnyKeyToContinue();
+            return;
+        } else {
+            this.showDotAnimation("🙈 Deleting User", "blue");
+            this.functionDeleteUser(user);
+            this.displayMessage("🔪 User deleted successfully.", "green");
+            this.addDelay(1337);
+            this.pressAnyKeyToContinue();
+        }
+    }
 
-        askIncome(user, console);
+    private void mainMenuDisplayUser() {
+        User user;
+        user = null;
 
-        user.calculateCgt();
+        user = this.findUserByName(getValidatedInput("Enter name: ", console, true, "[a-zA-Z ]+", "Invalid name."));
 
-        printCapitalGainsTax(user);
+        this.showDotAnimation("🔎 Searching User", "blue");
+        if (user == null) {
+            this.displayMessage("🤨 User not found.", "red");
+            this.addDelay(1337);
+            this.pressAnyKeyToContinue();
+            return;
+        } else {
+            this.functionDisplayUser(user);
+            this.addDelay(1337);
+            this.pressAnyKeyToContinue();
+        }
+    }
 
-        boolean willInvest;
+    private void mainMenuDisplayAllUsers() {
+        this.functionDisplayAllUsers();
+        this.pressAnyKeyToContinue();
+    }
 
-        willInvest = askToInvest(user, console);
+    private void mainMenuAddInvestment() {
+        User user;
 
-        if (willInvest) {
-            continueInvestment(user, console);
-            user.calculateInvestment();
-            printPredictedProfitForInvestment(user);
+        user = null;
+        user = this.findUserByName(getValidatedInput("Enter name: ", console, true, "[a-zA-Z ]+", "Invalid name."));
+        this.showDotAnimation("🔎 Searching User", "blue");
+        if (user == null) {
+            this.displayMessage("💀 User not found", "red");
+            this.addDelay(500);
+            this.pressAnyKeyToContinue();
+            return;
+        } else {
+            this.displayMessage("User found", "green");
+            if (user.getAvailableBalance() == 0) {
+                this.displayMessage("🫤 Bro! you're too broke to invest, go get a job first", "red");
+                this.addDelay(1337);
+                this.pressAnyKeyToContinue();
+                return;
+            } else if (user.getNumberOfAccounts() == 2) {
+                this.displayMessage("🤑 Maximum number of investment accounts reached.", "red");
+                this.addDelay(1337);
+                this.pressAnyKeyToContinue();
+                return;
+            }
+            this.showDotAnimation("Adding Investment", "blue");
+            user.addNewInvestmentAccount(this.createInvestmentAccount(user.getAvailableBalance()));
+            this.displayMessage("🚀🌕 Investment added successfully.", "green");
+            this.addDelay(1337);
+            this.pressAnyKeyToContinue();
+        }
+    }
+
+    private void mainMenuDisplayInvestment() {
+        User user;
+
+        user = null;
+
+        user = this.findUserByName(getValidatedInput("Enter name: ", console, true, "[a-zA-Z ]+", "Invalid name."));
+        if (user == null) {
+            this.displayMessage("🥲 User not found.", "red");
+            this.addDelay(1337);
+            this.pressAnyKeyToContinue();
+            return;
+        } else {
+
+            if (user.getNumberOfAccounts() == 0) {
+                this.displayMessage("🫤 No investment account found for the user: " + user.getName(), "red");
+                this.addDelay(1337);
+                this.pressAnyKeyToContinue();
+                return;
+            }
+
+            int accountNumber;
+            accountNumber = (int) this.getValidatedNumInput(1, 2, true, "Enter account number: ", console, "[0-2]+",
+                    "Invalid account number.");
+            if (accountNumber > user.getNumberOfAccounts()) {
+                this.displayMessage("🥴 Account not found.", "red");
+                this.addDelay(1337);
+                this.pressAnyKeyToContinue();
+                return;
+            }
+            this.functionDisplayInvestment(user.getInvestmentAccount(accountNumber - 1));
+            this.addDelay(1337);
+            this.pressAnyKeyToContinue();
         }
 
-        // Delaying by 1.3 sec to make it seems legit.
+    }
+
+    private void mainMenuDeleteInvestment() {
+
+        User user;
+        user = null;
+
+        user = this.findUserByName(getValidatedInput("Enter name: ", console, true, "[a-zA-Z ]+", "Invalid name."));
+        if (user == null) {
+            this.displayMessage("🫨 User not found.", "red");
+            this.addDelay(1337);
+            this.pressAnyKeyToContinue();
+            return;
+        } else {
+            if (user.getNumberOfAccounts() == 0) {
+                this.displayMessage("🫤 No investment account found for the user: " + user.getName(), "red");
+                this.addDelay(1337);
+                this.pressAnyKeyToContinue();
+                return;
+            } else {
+                int accountNumber;
+                accountNumber = (int) this.getValidatedNumInput(1, 2, true, "Enter account number: ", console, "[0-2]+",
+                        "Invalid account number.");
+                if (user.deleteInvestmentAccount(accountNumber - 1) == 0) {
+                    this.showDotAnimation("🙈 Deleting Investment Account", "blue");
+                    this.displayMessage("💣 Investment account deleted successfully.", "green");
+                } else {
+                    this.displayMessage("🙈 Account not found.", "red");
+                }
+                this.addDelay(1337);
+                this.pressAnyKeyToContinue();
+            }
+        }
+
+    }
+
+    private void mainMenuSaveToFile() {
+        String filename;
+        filename = this.getValidatedInput("Enter filename to save without extension name: ", console, false,
+                "[a-zA-Z0-9]+",
+                "Invalid filename. Please enter a valid filename.");
+        this.showDotAnimation("💿 Saving Data", "blue");
+        this.functionSaveToFile(filename);
+        this.addDelay(1337);
+        this.displayMessage("💾 Data saved successfully.", "green");
+        this.pressAnyKeyToContinue();
+    }
+
+    private void mainMenuExitProgram() {
+        this.displayMessage("👋 Exiting Program...", "red");
+        this.addDelay(1337);
+        this.functionExitProgram();
+    }
+
+    /* ========== Main Menu Functions Ends ============== */
+
+    /* ========== Level 1 Helper Functions Starts ============== */
+
+    // NOTE TO SELF : MAIN PROGRAM REQUREMENT NO.1
+    private void functionAddUser(String name, double salary, boolean isResident, double buyingPrice,
+            double sellingPrice,
+            int numberOfYearsHeld) {
+        if (userCount < 5) {
+            users[userCount] = new User(name, salary, isResident, buyingPrice, sellingPrice, numberOfYearsHeld);
+            userCount++;
+        } else {
+            this.displayMessage("🥴 Maximum number of users reached.", "red");
+        }
+    }
+
+    // NOTE TO SELF : MAIN PROGRAM REQUREMENT NO.2
+    // WHILE LOOP IS CLEANER THAN FOR LOOP
+    // AND EASIER TO READ AND UNDERSTAND
+
+    private void functionDeleteUser(User user) {
+        int i = 0;
+        boolean userFound = false;
+        while (i < userCount && !userFound) {
+            if (users[i].equals(user)) {
+                userFound = true;
+                while (i < userCount - 1) {
+                    users[i] = users[i + 1];
+                    i++;
+                }
+                userCount--;
+            }
+            i++;
+        }
+    }
+
+    // NOTE TO SELF : MAIN PROGRAM REQUREMENT NO.3
+    private void functionDisplayUser(User user) {
+        this.printUserData(user);
+    }
+
+    // NOTE TO SELF : MAIN PROGRAM REQUREMENT NO.4
+    private void functionDisplayAllUsers() {
+
+        this.showDotAnimation("🧠 Loading", "blue");
+        if (userCount == 0) {
+            this.displayMessage("😭 No users found.", "red");
+            this.addDelay(1337);
+            this.pressAnyKeyToContinue();
+            return;
+        }
+
+        for (int i = 0; i < userCount; i++) {
+            this.displayMessage("User " + (i + 1), "cyan");
+            this.functionDisplayUser(users[i]);
+        }
+    }
+
+    // NOTE TO SELF : MAIN PROGRAM REQUREMENT NO.5
+    private void functionDisplayInvestment(Investment investment) {
+        /*
+         * This function print Investment amount and Predicted Profit Table in a nice
+         * way.
+         */
+
+        System.out.println(); // Spacer
+        this.displayMessage("Investment Details", "green");
+        System.out.println(); // Spacer
+        for (int year = 1; year <= 3; year++) {
+            this.displayMessage("Year " + year + " Deposit : $" + investment.getDeposit(year), "white");
+        }
+        System.out.println(); // Spacer
+        this.displayMessage("Predicted Profit for Investment in "
+                + getSelectedCoinName(investment), "green");
+        System.out.println(); // Spacer
+        System.out.printf("%-8s|%-22s|%-15s\n", "Years", "YearlyProfit", "TotalProfit");
+        System.out.println("________|______________________|_______________");
+
+        for (int year = 1; year <= 3; year++) {
+            this.printTableRow(year, investment.getYearlyProfit(year), investment.getTotalProfit(year));
+        }
+    }
+
+    // NOTE TO SELF : MAIN PROGRAM REQUREMENT NO.6
+    private void functionSaveToFile(String filename) {
+        // Real function to Save all the user data to a file will be implemented here.
+
+        File file = new File(filename + ".txt");
+
         try {
-            Thread.sleep(1337);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            if (file.createNewFile()) {
+                System.out.println("🍒 File created: " + file.getName());
+            } else {
+                System.out.println("🙈 File already exists. Overwriting...");
+            }
+        } catch (Exception e) {
+            System.out.println("👻 An error occurred.");
         }
 
-        printUserData(user, willInvest);
-        console.close();
+        FileWriter writer;
+        try {
+            writer = new FileWriter(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (userCount == 0) {
+            this.dataWriter(writer, "No users found.\n");
+        }
+
+        for (int i = 0; i < userCount; i++) {
+            this.userDataSavingMachine(writer, users[i]);
+        }
+
+        try {
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    // NOTE TO SELF : MAIN PROGRAM REQUREMENT NO.7
+    private void functionExitProgram() {
+        System.exit(0);
+    }
+
+    /* ========== Level 1 Helper Functions Ends ============== */
+
+    /* ========== Level 2 Helper Functions Starts ============== */
+
+    /**
+     * Finds a user by name in the users array.
+     *
+     * @param name The name of the user to find.
+     * @return The User object if found, otherwise null.
+     */
+    private User findUserByName(String name) {
+        for (int i = 0; i < userCount; i++) {
+            if (users[i].getName().equals(name)) {
+                return users[i];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Displays a message prompting the user to press any key to continue.
+     */
+    private void pressAnyKeyToContinue() {
+
+        System.out.println();
+        this.displayMessage("Press any key to continue...", "cyan");
+
+        try {
+            System.in.read();
+        } catch (Exception e) {
+            throw new RuntimeException("Error reading from console");
+        }
+    }
+
+    /**
+     * dataWriter function is used to write data to a file.
+     * 
+     * @param writer The FileWriter object used to write to the file.
+     * @param data   The data to write to the file.
+     */
+    private void dataWriter(FileWriter writer, String data) {
+        try {
+            writer.write(data);
+        } catch (Exception e) {
+            System.out.println("👻 An unexpected error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This function is used to write the investment details to a file.
+     * 
+     * @param writer     The FileWriter object used to write to the file.
+     * @param investment The Investment object representing the user's investment.
+     */
+    private void userInvestmentDetailSavingMachine(FileWriter writer, Investment investment) {
+
+        /*
+         * This function print Investment amount and Predicted Profit Table in a nice
+         * way.
+         */
+
+        this.dataWriter(writer, "\n"); // Spacer
+        this.dataWriter(writer, "Investment Details" + "\n");
+        this.dataWriter(writer, "\n"); // Spacer
+        for (int year = 1; year <= 3; year++) {
+            this.dataWriter(writer, "Year " + year + " Deposit : $" + investment.getDeposit(year) + "\n");
+        }
+        this.dataWriter(writer, "\n"); // Spacer
+        this.dataWriter(writer, "Predicted Profit for Investment in " + getSelectedCoinName(investment) + "\n");
+        this.dataWriter(writer, "\n"); // Spacer
+
+        // write in this format //System.out.printf("%-8s|%-22s|%-15s\n", "Years",
+        // "YearlyProfit", "TotalProfit");
+
+        this.dataWriter(writer, String.format("%-8s|%-22s|%-15s\n", "Years", "YearlyProfit", "TotalProfit" + "\n"));
+        this.dataWriter(writer, "________|______________________|_______________\n");
+
+        for (int year = 1; year <= 3; year++) {
+            this.writeTableRow(writer, year, investment.getYearlyProfit(year), investment.getTotalProfit(year));
+        }
+
+    }
+
+    /**
+     * Helper function to write User data to a file.
+     * 
+     * @param writer The FileWriter object used to write to the file.
+     * @param user   The User object representing the user.
+     */
+    private void userDataSavingMachine(FileWriter writer, User user) {
+
+        /* User Details */
+        this.dataWriter(writer, "_______________________________________________\n");
+        this.dataWriter(writer, "\n");
+        this.dataWriter(writer, "User Details\n");
+
+        this.dataWriter(writer, "Name : " + user.getName() + "\n");
+        this.dataWriter(writer, "Annual Salary : " + user.getAnnualSalary() + "\n");
+
+        this.dataWriter(writer, "Residential Status : ");
+        if (user.getResident()) {
+            this.dataWriter(writer, "Yes" + "\n");
+        } else {
+            this.dataWriter(writer, "No" + "\n");
+        }
+
+        this.dataWriter(writer, "\n"); // Spacer
+
+        /* PRINT INVESTMENT */
+        this.dataWriter(writer, "Crypto Currency" + "\n");
+        this.dataWriter(writer, "Buying Price : " + user.getBuyingPrice() + "\n");
+        this.dataWriter(writer, "Selling Price : " + user.getSellingPrice() + "\n");
+        this.dataWriter(writer, "Number of years held : " + user.getYearsHold() + "\n");
+
+        /* PRINT CGT */
+        this.dataWriter(writer, "\n"); // Spacer
+
+        this.dataWriter(writer, "Capital Gains Tax:" + "\n");
+        this.dataWriter(writer, "Tax Rate : " + user.getTaxRate() * 100 + "%\n");
+        this.dataWriter(writer, "Capital Gains Tax : " + user.getCgt() + "\n");
+        this.dataWriter(writer, "Profit : " + user.getActualProfit() + "\n");
+
+        this.dataWriter(writer, "\n"); // Spacer
+
+        /* Print Available Balance */
+        this.dataWriter(writer, "Available Balance : " + user.getAvailableBalance() + "\n");
+
+        this.dataWriter(writer, "\n");// Spacer
+
+        /* Print Investment Accounts */
+
+        if (user.getNumberOfAccounts() > 0) {
+            this.dataWriter(writer, "Investment Accounts for " + user.getName() + "\n");
+            for (int i = 0; i < user.getNumberOfAccounts(); i++) {
+                this.dataWriter(writer, "\n"); // Spacer
+                this.dataWriter(writer, "Account Number : " + (i + 1) + "\n");
+                this.userInvestmentDetailSavingMachine(writer, user.getInvestmentAccount(i));
+                this.dataWriter(writer, "\n"); // Spacer
+            }
+        } else {
+            this.dataWriter(writer, "No investment account found for the user: " + user.getName() + "\n");
+        }
+
+    }
+
+    /**
+     * Displays a message with the specified color.
+     *
+     * @param message The message to display.
+     * @param color   The color of the message.
+     */
+    private void displayMessage(String message, String color) {
+        final String ANSI_RESET = "\u001B[0m";
+        final String ANSI_BLACK = "\u001B[30m";
+        final String ANSI_RED = "\u001B[31m";
+        final String ANSI_GREEN = "\u001B[32m";
+        final String ANSI_YELLOW = "\u001B[33m";
+        final String ANSI_BLUE = "\u001B[34m";
+        final String ANSI_PURPLE = "\u001B[35m";
+        final String ANSI_CYAN = "\u001B[36m";
+        final String ANSI_WHITE = "\u001B[37m";
+
+        switch (color) {
+            case "black":
+                System.out.println(ANSI_BLACK + message + ANSI_RESET);
+                break;
+            case "red":
+                System.out.println(ANSI_RED + message + ANSI_RESET);
+                break;
+            case "green":
+                System.out.println(ANSI_GREEN + message + ANSI_RESET);
+                break;
+            case "yellow":
+                System.out.println(ANSI_YELLOW + message + ANSI_RESET);
+                break;
+            case "blue":
+                System.out.println(ANSI_BLUE + message + ANSI_RESET);
+                break;
+            case "purple":
+                System.out.println(ANSI_PURPLE + message + ANSI_RESET);
+                break;
+            case "cyan":
+                System.out.println(ANSI_CYAN + message + ANSI_RESET);
+                break;
+            case "white":
+                System.out.println(ANSI_WHITE + message + ANSI_RESET);
+                break;
+            default:
+                System.out.println(message);
+        }
     }
 
     /**
@@ -127,7 +691,7 @@ public class CgtInterface {
      * @return The validated input from the user.
      */
     private String getValidatedInput(String prompt, Scanner console, boolean isName, String regex,
-                                     String invalidMessage) {
+            String invalidMessage) {
         String input;
         do {
             System.out.print(prompt);
@@ -147,8 +711,7 @@ public class CgtInterface {
      *
      * @param minimum              The minimum allowed value for the input.
      * @param maximum              The maximum allowed value for the input. (put -1
-     *                             to
-     *                             ignore maximum value check)
+     *                             to ignore maximum value check)
      * @param acceptEqualToMinimum Boolean value whether going to accept equal
      *                             amount to minimum amount.
      * @param prompt               The message prompting the user for input.
@@ -159,9 +722,10 @@ public class CgtInterface {
      * @return The validated numerical input from the user.
      */
     private double getValidatedNumInput(double minimum, double maximum, boolean acceptEqualToMinimum, String prompt,
-                                        Scanner console, String regex,
-                                        String invalidMessage) {
-        double value = -1; //Setting value to -1 to pass the minimum value check, also compiler check, never set it to 0,
+            Scanner console, String regex,
+            String invalidMessage) {
+        double value = -1; // Setting value to -1 to pass the minimum value check, also compiler check,
+        // never set it to 0,
         String input;
         do {
             System.out.print(prompt);
@@ -181,261 +745,314 @@ public class CgtInterface {
     }
 
     /**
-     * Asks the user for personal details and sets them in the User object.
+     * Prints all available user data in a formatted way.
      *
-     * @param user    The User object to set the personal details.
-     * @param console The Scanner object to read user input.
+     * @param user The User object representing the user.
      */
-    public void askUserDetails(User user, Scanner console) {
-        boolean isElonMusksSon;
-        String regexName;
-        isElonMusksSon = false; // Turn it to true if we're putting numbers into our names.
+    private void printUserData(User user) {
 
-        /*
-         * Sir, You mentioned earlier in class with ancient headstone example
-         * we need to consider for the future.
-         * I'm letting numbers in name just in case Elon's Son wants to use this
-         * system.
-         */
+        /* User Details */
+        this.displayMessage("_______________________________________________", "green");
+        System.out.println();
+        this.displayMessage("User Details", "green");
 
-        if (isElonMusksSon)
-            regexName = "[a-zA-Z0-9 ]+";
-        else
-            regexName = "[a-zA-Z ]+";
+        this.displayMessage("Name : " + user.getName(), "white");
+        this.displayMessage("Annual Salary : " + user.getAnnualSalary(), "white");
 
-        /* Get and Set Name */
-        String name;
-        name = getValidatedInput("What's your name? [put your name hit enter] ", console, true, regexName,
-                "Please enter a valid name (letters only, no numbers or special characters).");
-        user.setName(name);
-
-        /* Get and Set Salary */
-        double salary;
-        salary = getValidatedNumInput(0, -1, false, "Your Annual Salary? [input number only] ", console,
-                "[0-9]+(\\.[0-9]+)?", "Please enter a positive number for salary. You dont have job? Skill Issue!");
-        user.setAnnualSalary(salary);
-
-        /* Get and Set Residential Status */
-        String inputResident;
-        inputResident = getValidatedInput("Are you resident of Australia? [yes/no] ", console, false, "^(yes|no|y|n)$",
-                "Invalid input. Please enter 'yes' or 'no'.");
-        user.setResident(inputResident.matches("^(yes|y)$"));
-    }
-
-    /**
-     * Asks the user for income details and sets them in the User object.
-     *
-     * @param user    The User object to set the income details.
-     * @param console The Scanner object to read user input.
-     */
-    public void askIncome(User user, Scanner console) {
-        /*
-         * IRS is coming bro....
-         * better hide ur money....
-         */
-
-        /* Get Buying Price */
-        double buyingPrice;
-
-        buyingPrice = getValidatedNumInput(0, -1, false, "Buying price [type in positive number] : $", console,
-                "[0-9]+(\\.[0-9]+)?", "Please enter a valid positive number.");
-        user.setBuyingPrice(buyingPrice);
-
-        /* Get Selling Price */
-        double sellingPrice;
-        /*
-         * As PDF mentions
-         * For this assignment, we are
-         * assuming that the selling price is always more than buying price so this
-         * should be checked as well, otherwise
-         * an error message is shown and ask again for selling price.
-         */
-        sellingPrice = getValidatedNumInput(buyingPrice, -1, false, "Selling price [type in positive number] : $",
-                console, "[0-9]+(\\.[0-9]+)?",
-                "Please enter a value greater than Buying Price");
-
-        user.setSellingPrice(sellingPrice);
-
-        /* Get Years held */
-        int numberOfYearsHeld;
-        numberOfYearsHeld = (int) getValidatedNumInput(1, -1, true, "Number of years held [type in positive number] : ",
-                console, "[0-9]+",
-                "Please enter a positive number greater than zero.");
-        user.setYears(numberOfYearsHeld);
-    }
-
-    /**
-     * Asks the user if they want to invest.
-     *
-     * @param user    The User object representing the user.
-     * @param console The Scanner object to read user input.
-     * @return true if the user wants to invest, false otherwise.
-     */
-    public boolean askToInvest(User user, Scanner console) {
-        /*
-         * I really want to set function name ScamTheUser()
-         * bro just buy the lands in Third World countries like in
-         * (SEA countries like Burma or African Countries.)
-         * you're sure going to be rich already
-         * if not ur grandchildren will.
-         */
-        boolean invest = false;
-        String willInvest;
-
-        willInvest = getValidatedInput("Would you like to invest? [yes/no] ", console, false, "^(yes|no|y|n)$",
-                "Invalid input. Please enter 'yes' or 'no'.");
-        if (willInvest.equals("yes") || willInvest.equals("y")) {
-            invest = true;
+        System.out.print("Residential Status : ");
+        if (user.getResident()) {
+            this.displayMessage("Yes", "green");
+        } else {
+            this.displayMessage("No", "yellow");
         }
-        return invest;
-    }
 
-    /**
-     * Prompts the user to continue with investment and collects investment details.
-     *
-     * @param user    The User object representing the user.
-     * @param console The Scanner object for user input.
-     */
-    public void continueInvestment(User user, Scanner console) {
-        /*
-         * He's scamming bro, careful!!
-         * Your Savings going to the moon but upside down.
-         * see the image here: https://dl.bontal.net/images/to_the_moom.webp
-         */
+        System.out.println(); // Spacer
 
-        double firstYearDeposit = 0; // I don't know should I use year1Deposit or yearOneDeposit or firstYearDeposit?
-        double secondYearDeposit = 0;
-        double thirdYearDeposit = 0;
+        /* PRINT INVESTMENT */
+        this.displayMessage("Crypto Currency", "green");
+        this.displayMessage("Buying Price : " + user.getBuyingPrice(), "white");
+        this.displayMessage("Selling Price : " + user.getSellingPrice(), "white");
+        this.displayMessage("Number of years held : " + user.getYearsHold(), "white");
 
-        firstYearDeposit = getValidatedNumInput(0, user.getActualProfit(),
-                false, "Enter initial investment amount (cannot exceed $" + user.getActualProfit() + "): $", console,
-                "[0-9]+(\\.[0-9]+)?",
-                "Invalid input. Initial investment amount cannot exceed $" + user.getActualProfit() + ".");
+        /* PRINT CGT */
+        System.out.println(); // Spacer
 
-        // Get and validate subsequent deposits
-        for (int year = 2; year <= 3; year++) {
-            double deposit;
+        this.displayMessage("Capital Gains Tax:", "green");
+        this.displayMessage("Tax Rate : " + user.getTaxRate() * 100 + "%", "white");
+        this.displayMessage("Capital Gains Tax : " + user.getCgt(), "white");
+        this.displayMessage("Profit : " + user.getActualProfit(), "white");
 
-            deposit = getValidatedNumInput(0, -1,
-                    true, "Enter investment amount after year " + (year - 1) + ": $", console,
-                    "[0-9]+(\\.[0-9]+)?", "Invalid input. Please enter a positive number.");
-            if (year == 2) {
-                secondYearDeposit = deposit;
-            } else {
-                thirdYearDeposit = deposit;
+        System.out.println(); // Spacer
+
+        /* Print Available Balance */
+        this.displayMessage("Available Balance : " + user.getAvailableBalance(), "yellow");
+
+        System.out.println(); // Spacer
+
+        /* Print Investment Accounts */
+
+        if (user.getNumberOfAccounts() > 0) {
+            this.displayMessage("Investment Accounts for " + user.getName(), "green");
+            for (int i = 0; i < user.getNumberOfAccounts(); i++) {
+                System.out.println(); // Spacer
+                System.out.println("Account Number : " + (i + 1));
+                this.functionDisplayInvestment(user.getInvestmentAccount(i));
+                System.out.println(); // Spacer
             }
+        } else {
+            this.displayMessage("No investment account found for the user: " + user.getName(), "red");
         }
 
-        user.setDeposit(firstYearDeposit, 1);
-        user.setDeposit(secondYearDeposit, 2);
-        user.setDeposit(thirdYearDeposit, 3);
+    }
 
-        /* Get and Set Coin Selection */
-        int coinSelection;
-        System.out.println("Choose the Cryptocurrency to invest in");
-        System.out.println("1 for Best Coin (predicted profit rates 18%)");
-        System.out.println("2 for Simple Coin (predicted profit rates 12%)");
-        System.out.println("3 for Fast Coin (predicted profit rates 15%)");
+    /**
+     * Prints a row in a table format. In this case, it prints the year, yearly
+     * profit, and total profit.
+     *
+     * @param num1 The integer value for the first column.
+     * @param num2 The double value for the second column.
+     * @param num3 The double value for the third column.
+     */
+    private void printTableRow(int num1, double num2, double num3) {
+        System.out.printf("%-8d|$%-21.2f|$%-14.2f\n", num1, num2, num3);
+    }
 
-        coinSelection = (int) getValidatedNumInput(1, 3, true, "[type 1/2/3]: ", console,
-                "[0-9]+", "Invalid input. Please enter a number between 1 and 3.");
+    /**
+     * Prints a row in a table format. In this case, it prints the year, yearly
+     * profit, and total profit.
+     *
+     * @param writer The FileWriter object used to write to the file.
+     * @param num1   The integer value for the first column.
+     * @param num2   The double value for the second column.
+     * @param num3   The double value for the third column.
+     */
+    private void writeTableRow(FileWriter writer, int num1, double num2, double num3) {
 
-        // Set coin selection in the user object
-        user.setInvestCoinSelection(coinSelection);
-        System.out.println("You Selected " + getSelectedCoinName(user, user.getInvestCoinSelection()));
+        // This function is used to write the table row in a file.
+        try {
+            writer.write(String.format("%-8d|$%-21.2f|$%-14.2f\n", num1, num2, num3));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * Retrieves the name of the selected cryptocurrency based on user's choice.
      *
-     * @param user     The User object representing the user.
-     * @param selected The integer representing the selected cryptocurrency.
+     * @param investment The Investment object representing the user's investment.
      * @return The name of the selected cryptocurrency.
      */
-    public String getSelectedCoinName(User user, int selected) {
-        return switch (user.getInvestCoinSelection()) {
+    private String getSelectedCoinName(Investment investment) {
+        return switch (investment.getCoinSelection()) {
             case 1 -> "BestCoin";
             case 2 -> "SimpleCoin";
             case 3 -> "FastCoin";
-            default -> throw new IllegalStateException("Unexpected value: " + user.getInvestCoinSelection());
+            default -> throw new IllegalStateException("Unexpected value: " + investment.getCoinSelection());
         };
     }
 
-    private static void printTableRow(int year, double yearlyProfit, double totalProfit) {
-        System.out.printf("%-8d|$%-21.2f|$%-14.2f\n", year, yearlyProfit, totalProfit);
+    /* ========== Level 2 Helper Functions Ends ============== */
+
+    /**
+     * This method creates an Investment object by prompting the user for the
+     * initial
+     * investment amount, subsequent deposits, and the cryptocurrency to invest in.
+     * The method validates the user input and returns the Investment object.
+     *
+     * @param availableAmount The available balance for the user to invest.
+     * @return The Investment object created with the user input.
+     */
+    private Investment createInvestmentAccount(double availableAmount) {
+        /*
+         * He's scamming bro, careful!!
+         * Your Savings going to the moon but upside down.
+         * see the image here: https://dl.bontal.net/images/to_the_moom.webp
+         */
+        double year1Deposit;
+        double year2Deposit;
+        double year3Deposit;
+
+        int coinSelection;
+
+        coinSelection = 0;
+        year1Deposit = 0;
+        year2Deposit = 0;
+        year3Deposit = 0;
+
+        year1Deposit = this.getValidatedNumInput(0, availableAmount,
+                false, "Enter initial investment amount (cannot exceed $" + availableAmount + "): $", console,
+                "[0-9]+(\\.[0-9]+)?",
+                "Invalid input. Initial investment amount cannot exceed $" + availableAmount + ".");
+
+        // Get and validate subsequent deposits
+        for (int year = 2; year <= 3; year++) {
+            double deposit;
+
+            deposit = this.getValidatedNumInput(0, -1,
+                    true, "Enter investment amount after year " + (year - 1) + ": $", console,
+                    "[0-9]+(\\.[0-9]+)?", "Invalid input. Please enter a positive number.");
+            if (year == 2) {
+                year2Deposit = deposit;
+            } else {
+                year3Deposit = deposit;
+            }
+        }
+
+        this.displayMessage("Choose the Cryptocurrency to invest in", "cyan");
+        this.displayMessage("1 for Best Coin (predicted profit rates 18%)", "cyan");
+        this.displayMessage("2 for Simple Coin (predicted profit rates 12%)", "cyan");
+        this.displayMessage("3 for Fast Coin (predicted profit rates 15%)", "cyan");
+
+        coinSelection = (int) this.getValidatedNumInput(1, 3, true, "[type 1/2/3]: ", console,
+                "[0-9]+", "Invalid input. Please enter a number between 1 and 3.");
+
+        return new Investment(year1Deposit, year2Deposit, year3Deposit, coinSelection);
     }
 
     /**
-     * Prints the predicted profit for the investment.
-     *
-     * @param user The User object representing the user.
+     * This method clears the console screen and reloads the screen by recalculating
+     * the user's CGT, investment, and available balance.
+     * It also adds a delay to make the program more interactive.
      */
-    public void printPredictedProfitForInvestment(User user) {
+    private void reloadScreen() {
         /*
-         * This function print Predicted Profit Table in a nice way.
+         * Every time the screen is reloaded,
+         * the user's CGT, investment, and available
+         * balance are recalculated.
          */
-        System.out
-                .println("Predicted Profit for Investment in "
-                        + getSelectedCoinName(user, user.getInvestCoinSelection()));
-        System.out.printf("%-8s|%-22s|%-15s\n", "Years", "YearlyProfit", "TotalProfit");
-        System.out.println("________|______________________|_______________");
+        for (int i = 0; i < userCount; i++) {
+            users[i].calculateCgt();
+            users[i].calculateInvestment();
+            users[i].calculateAvailableBalance();
+        }
+        this.addDelay(2000);
+        System.out.print("\033[H\033[2J"); // ANSI escape code to clear the console
+        System.out.flush();
+    }
 
-        for (int year = 1; year <= 3; year++) {
-            printTableRow(year, user.getYearlyProfit(year), user.getTotalProfit(year));
+    /**
+     * Artificial delay to make the program more interactive.
+     * I tried with different delay times and found that
+     * 1337 milliseconds is an ideal delay time.
+     *
+     * @param delay The delay time in milliseconds.
+     */
+    private void addDelay(int delay) {
+        try {
+            Thread.sleep(delay);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
     /**
-     * Prints the Capital Gains Tax the user is liable for.
-     *
-     * @param user The User object representing the user.
+     * This method displays the main menu to the user.
+     * The menu includes options to add, delete, and display users,
+     * add, delete, and display investments, save data to a file,
+     * and exit the program.
      */
-    public void printCapitalGainsTax(User user) {
-        System.out.println();
-
-        System.out.println("Capital Gains Tax:");
-        System.out.println("Tax Rate : " + user.getTaxRate() * 100 + "%");
-        System.out.println("Capital Gains Tax : " + user.getCgt());
-        System.out.println("Profit : " + user.getActualProfit());
-
-        System.out.println();
+    private void displayMenu() {
+        this.displayMessage("Welcome to CGT Calculation Program", "green");
+        this.displayMessage("============================================", "yellow");
+        this.displayMessage("Please select an option from the menu below:", "cyan");
+        this.displayMessage("============================================", "yellow");
+        this.displayMessage("1. Add User", "cyan");
+        this.displayMessage("2. Delete User", "cyan");
+        this.displayMessage("3. Display User", "cyan");
+        this.displayMessage("4. Display All Users", "cyan");
+        this.displayMessage("5. Add Investment", "cyan");
+        this.displayMessage("6. Display Investment", "cyan");
+        this.displayMessage("7. Delete Investment", "cyan");
+        this.displayMessage("8. Save to File", "cyan");
+        this.displayMessage("9. Exit", "cyan");
+        System.out.println(); // Spacer
     }
 
     /**
-     * Prints all available user data.
+     * This method displays a loading animation with dots(example: Loading...).
      *
-     * @param user       The User object representing the user.
-     * @param willInvest Boolean indicating whether the user will invest for the
-     *                   coins.
+     * @param message The message to display before the dots.
+     * @param color   The color of the message.
      */
-    public void printUserData(User user, boolean willInvest) {
-        /* print all the available User data in the final */
+    private void showDotAnimation(String message, String color) {
+        for (int i = 0; i < 15; i++) {
+            StringBuilder loadingMessage = new StringBuilder(message);
+            for (int j = 0; j <= i % 4; j++) {
+                loadingMessage.append(".");
+            }
+            System.out.print("\033[H\033[2J"); // Clear the console
+            this.displayMessage(loadingMessage.toString(), color);
+            this.addDelay(137);
+        }
+    }
 
-        /* User Details */
-        System.out.println();
-        System.out.println("_______________________________________________");
-        System.out.println();
-        System.out.println("User Details");
+    /**
+     * This method displays a loading animation (Loading...)
+     */
+    private void loadingScreen() {
+        this.showDotAnimation("🧠 Loading", "blue");
+    }
 
-        System.out.println("Name : " + user.getName());
-        System.out.println("Annual Salary : " + user.getAnnualSalary());
+    /**
+     * The main menu loop that displays the menu and processes user input.
+     * The loop continues until the user chooses to exit the program.
+     * The user's choice is validated to ensure it is within the range of menu
+     * options.
+     * The appropriate method is called based on the user's choice.
+     */
+    private void mainMenuLoop() {
+        int choice;
+        choice = 0;
 
-        System.out.print("Residential Status : ");
-        if (user.getResident())
-            System.out.println("Yes");
-        else
-            System.out.println("No");
-        System.out.println();
+        do {
+            this.loadingScreen();
+            this.reloadScreen();
+            this.displayMenu();
 
-        /* PRINT INVESTMENT */
-        System.out.println("Crypto Currency");
-        System.out.println("Buying Price : " + user.getBuyingPrice());
-        System.out.println("Selling Price : " + user.getSellingPrice());
-        System.out.println("Number of years held : " + user.getYears());
+            choice = (int) this.getValidatedNumInput(1, 9, true, "Enter Your choice: ", console, "[1-9]",
+                    "Invalid choice.");
 
-        printCapitalGainsTax(user);
-        if (willInvest)
-            printPredictedProfitForInvestment(user);
+            switch (choice) {
+                case 1:
+                    this.mainMenuAddUser();
+                    break;
+                case 2:
+                    this.MainMenuDeleteUser();
+                    break;
+                case 3:
+                    this.mainMenuDisplayUser();
+                    break;
+                case 4:
+                    this.mainMenuDisplayAllUsers();
+                    break;
+                case 5:
+                    this.mainMenuAddInvestment();
+                    break;
+                case 6:
+                    this.mainMenuDisplayInvestment();
+                    break;
+                case 7:
+                    this.mainMenuDeleteInvestment();
+                    break;
+                case 8:
+                    this.mainMenuSaveToFile();
+                    break;
+                case 9:
+                    this.mainMenuExitProgram();
+                    break;
+                default:
+                    System.out.println("Invalid Choice!");
+            }
+
+        } while (choice != 9);
+
+    }
+
+    /**
+     * Runs the CGT calculation program.
+     */
+    private void run() {
+        this.mainMenuLoop();
     }
 
     /**
@@ -443,8 +1060,9 @@ public class CgtInterface {
      *
      * @param args The command-line arguments (not used in this program).
      */
+
     public static void main(String[] args) {
-        CgtInterface calc = new CgtInterface();
+        CgtInterface calc = new CgtInterface(true);
         calc.run();
     }
 }
