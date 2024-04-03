@@ -33,7 +33,7 @@
  */
 
 package net.bontal.cgt;
-import java.util.ArrayList;
+
 /**
  * The User class represents a user who is making an investment and provides
  * methods to manage user data
@@ -71,7 +71,7 @@ public class User {
 
     private final Investment[] investmentAccount;
     private int numberOfAccounts;
-    private ArrayList<Investment> investmentAccounts;
+
     /**
      * Default constructor for the User class.
      */
@@ -85,7 +85,6 @@ public class User {
         this.numberOfAccounts = 0;
         this.availableBalance = 0.0;
         this.investmentAccount = new Investment[2];
-        this.investmentAccounts = new ArrayList<>();
     }
 
     /**
@@ -111,7 +110,6 @@ public class User {
 
         this.numberOfAccounts = 0;
         this.investmentAccount = new Investment[2];
-        this.investmentAccounts = new ArrayList<>();
     }
 
     /**
@@ -266,10 +264,10 @@ public class User {
      * @param index The index of the investment account.
      * @return The investment account at the specified index.
      */
-
     public Investment getInvestmentAccount(int index) {
-        return this.investmentAccounts.get(index);
+        return this.investmentAccount[index];
     }
+
     /**
      * Gets the number of investment accounts.
      *
@@ -348,7 +346,6 @@ public class User {
      */
     public void addNewInvestmentAccount(Investment newInvestment) {
         if (numberOfAccounts < 2) {
-            this.investmentAccounts.add(newInvestment);
             this.investmentAccount[numberOfAccounts] = newInvestment;
             this.availableBalance = availableBalance - investmentAccount[numberOfAccounts].getDeposit(1);
             System.out.println("DEBUG:" + investmentAccount[numberOfAccounts].getDeposit(1));

@@ -29,7 +29,7 @@
  *
  *     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
- *               佛祖保佑       永无BUG
+ *               佛祖保佑         永无BUG
  */
 
 /*
@@ -41,7 +41,6 @@
  *  Min Thu Khaing, Thet Paing Hmu
  */
 
-
 /*
  * This comment goes to God or whatever/whoever created us...
  * I really hate object-oriented programming.
@@ -51,10 +50,8 @@
  */
 package net.bontal.cgt;
 
-import java.io.File;
+import java.io.*;
 import java.util.*;
-import java.io.FileWriter;
-import java.util.ArrayList;
 
 /**
  * The CgtInterface class serves as the main entry point for the Capital Gains
@@ -124,7 +121,7 @@ public class CgtInterface {
 
             users[0].addNewInvestmentAccount(new Investment(100, 2000, 3000, 1));
             users[0].addNewInvestmentAccount(new Investment(100, 2000, 3000, 2));
-            users[1].addNewInvestmentAccount(new Investment(100, 2000, 3333, 2));
+            users[1].addNewInvestmentAccount(new Investment(100, 2000, 3000, 2));
             users[2].addNewInvestmentAccount(new Investment(100, 3000, 4000, 3));
             users[3].addNewInvestmentAccount(new Investment(100, 4000, 5000, 1));
         }
@@ -297,7 +294,7 @@ public class CgtInterface {
             int accountNumber;
             accountNumber = (int) this.getValidatedNumInput(1, 2, true, "Enter account number: ", console, "[0-2]+",
                     "Invalid account number.");
-            if(accountNumber > user.getNumberOfAccounts()) {
+            if (accountNumber > user.getNumberOfAccounts()) {
                 this.displayMessage("🥴 Account not found.", "red");
                 this.addDelay(1337);
                 this.pressAnyKeyToContinue();
@@ -345,8 +342,12 @@ public class CgtInterface {
     }
 
     private void mainMenuSaveToFile() {
+        String filename;
+        filename = this.getValidatedInput("Enter filename to save without extension name: ", console, false,
+                "[a-zA-Z0-9]+",
+                "Invalid filename. Please enter a valid filename.");
         this.showDotAnimation("💿 Saving Data", "blue");
-        this.functionSaveToFile(users);
+        this.functionSaveToFile(filename);
         this.addDelay(1337);
         this.displayMessage("💾 Data saved successfully.", "green");
         this.pressAnyKeyToContinue();
@@ -440,83 +441,43 @@ public class CgtInterface {
             this.printTableRow(year, investment.getYearlyProfit(year), investment.getTotalProfit(year));
         }
     }
+
     // NOTE TO SELF : MAIN PROGRAM REQUREMENT NO.6
-    private void functionSaveToFile(User[] users) {
+    private void functionSaveToFile(String filename) {
         // Real function to Save all the user data to a file will be implemented here.
-        File file = new File("user_data.txt");
+
+        File file = new File(filename + ".txt");
 
         try {
             if (file.createNewFile()) {
-                System.out.println("File created: " + file.getName());
+                System.out.println("🍒 File created: " + file.getName());
             } else {
                 System.out.println("🙈 File already exists. Overwriting...");
             }
-
-            FileWriter writer = new FileWriter(file);
-            //boolean usersExist = false; //Check user existence
-
-            if (users.length == 0) {
-                writer.write("No Users");
-            }
-            else {
-                for (User user : users) {
-                    if (user != null) {
-                        writer.write("\nUsers Profile\n");
-                        writer.write("=============================\n");
-                        writer.write("Name ⇒ " + user.getName() + "\n");
-                        writer.write("Annual Salary ⇒ " + user.getAnnualSalary() + "\n");
-                        writer.write("Residential Status ⇒ " + (user.getResident() ? "Yes" : "No") + "\n");
-                        writer.write("");
-                        /* PRINT INVESTMENT */
-                        writer.write("\nCryptocurrency\n");
-                        writer.write("Buying Price ⇒ $" + user.getBuyingPrice() + "\n");
-                        writer.write("Selling Price ⇒ $" + user.getSellingPrice() + "\n");
-                        writer.write("Number of years held ⇒ " + user.getYearsHold() + "\n");
-                        writer.write("\n");
-
-                        // Print capital gain tax under each user's profile
-                        writer.write("Capital Gains Tax\n");
-                        writer.write("Tax Rate ⇒ " + String.format("%.2f%%\n", user.getTaxRate() * 100));
-                        writer.write("Capital Gains Tax ⇒ " + String.format("%.2f\n", user.getCgt()));
-                        writer.write("Profit ⇒ " + String.format("%.2f\n", user.getActualProfit()));
-                        writer.write("\n");
-
-                        writer.write("Number of investment accounts ⇒ " + user.getNumberOfAccounts() + "\n"); // Spacer
-                        //Investment
-                        for (int index = 0; index < user.getNumberOfAccounts(); index++) {
-                            Investment investment = user.getInvestmentAccount(index);
-                            writer.write("\nAccount Number : " + (index + 1));
-                            if (investment != null) {
-                                writer.write("\nInvestment Details\n");
-                                writer.write("\n");
-                                for (int year = 1; year <= 3; year++) {
-                                    writer.write("Year " + year + " Deposit : $" + investment.getDeposit(year) + "\n");
-                                }
-                                writer.write("\n");
-                                writer.write("Predicted Profit for Investment in " + getSelectedCoinName(investment) + "\n");
-                                writer.write("\n");
-                                writer.write(String.format("%-8s|%-22s|%-15s\n", "Years", "YearlyProfit", "TotalProfit"));
-                                writer.write("________|______________________|_______________\n");
-
-                                for (int year = 1; year <= 3; year++) {
-                                    writer.write(String.format("%-8d|%-22.2f|%-15.2f\n", year, investment.getYearlyProfit(year), investment.getTotalProfit(year)));
-                                }
-                            } else {
-                                writer.write("No investment account found for the user\n");
-                            }
-                        }
-                    }
-                }
-                //if (!usersExist) { writer.write("NO USERS"); }
-            }
-            writer.close ();
-            System.out.println("The Data has ben saved to UserData.txt");
         } catch (Exception e) {
             System.out.println("👻 An error occurred.");
-            e.printStackTrace();
         }
 
-        // Writing to the file
+        FileWriter writer;
+        try {
+            writer = new FileWriter(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (userCount == 0) {
+            this.dataWriter(writer, "No users found.\n");
+        }
+
+        for (int i = 0; i < userCount; i++) {
+            this.userDataSavingMachine(writer, users[i]);
+        }
+
+        try {
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -560,8 +521,120 @@ public class CgtInterface {
     }
 
     /**
-     * Displays a message with the specified color.
+     * dataWriter function is used to write data to a file.
      * 
+     * @param writer The FileWriter object used to write to the file.
+     * @param data   The data to write to the file.
+     */
+    private void dataWriter(FileWriter writer, String data) {
+        try {
+            writer.write(data);
+        } catch (Exception e) {
+            System.out.println("👻 An unexpected error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This function is used to write the investment details to a file.
+     * 
+     * @param writer     The FileWriter object used to write to the file.
+     * @param investment The Investment object representing the user's investment.
+     */
+    private void userInvestmentDetailSavingMachine(FileWriter writer, Investment investment) {
+
+        /*
+         * This function print Investment amount and Predicted Profit Table in a nice
+         * way.
+         */
+
+        this.dataWriter(writer, "\n"); // Spacer
+        this.dataWriter(writer, "Investment Details" + "\n");
+        this.dataWriter(writer, "\n"); // Spacer
+        for (int year = 1; year <= 3; year++) {
+            this.dataWriter(writer, "Year " + year + " Deposit : $" + investment.getDeposit(year) + "\n");
+        }
+        this.dataWriter(writer, "\n"); // Spacer
+        this.dataWriter(writer, "Predicted Profit for Investment in " + getSelectedCoinName(investment) + "\n");
+        this.dataWriter(writer, "\n"); // Spacer
+
+        // write in this format //System.out.printf("%-8s|%-22s|%-15s\n", "Years",
+        // "YearlyProfit", "TotalProfit");
+
+        this.dataWriter(writer, String.format("%-8s|%-22s|%-15s\n", "Years", "YearlyProfit", "TotalProfit" + "\n"));
+        this.dataWriter(writer, "________|______________________|_______________\n");
+
+        for (int year = 1; year <= 3; year++) {
+            this.writeTableRow(writer, year, investment.getYearlyProfit(year), investment.getTotalProfit(year));
+        }
+
+    }
+
+    /**
+     * Helper function to write User data to a file.
+     * 
+     * @param writer The FileWriter object used to write to the file.
+     * @param user   The User object representing the user.
+     */
+    private void userDataSavingMachine(FileWriter writer, User user) {
+
+        /* User Details */
+        this.dataWriter(writer, "_______________________________________________\n");
+        this.dataWriter(writer, "\n");
+        this.dataWriter(writer, "User Details\n");
+
+        this.dataWriter(writer, "Name : " + user.getName() + "\n");
+        this.dataWriter(writer, "Annual Salary : " + user.getAnnualSalary() + "\n");
+
+        this.dataWriter(writer, "Residential Status : ");
+        if (user.getResident()) {
+            this.dataWriter(writer, "Yes" + "\n");
+        } else {
+            this.dataWriter(writer, "No" + "\n");
+        }
+
+        this.dataWriter(writer, "\n"); // Spacer
+
+        /* PRINT INVESTMENT */
+        this.dataWriter(writer, "Crypto Currency" + "\n");
+        this.dataWriter(writer, "Buying Price : " + user.getBuyingPrice() + "\n");
+        this.dataWriter(writer, "Selling Price : " + user.getSellingPrice() + "\n");
+        this.dataWriter(writer, "Number of years held : " + user.getYearsHold() + "\n");
+
+        /* PRINT CGT */
+        this.dataWriter(writer, "\n"); // Spacer
+
+        this.dataWriter(writer, "Capital Gains Tax:" + "\n");
+        this.dataWriter(writer, "Tax Rate : " + user.getTaxRate() * 100 + "%\n");
+        this.dataWriter(writer, "Capital Gains Tax : " + user.getCgt() + "\n");
+        this.dataWriter(writer, "Profit : " + user.getActualProfit() + "\n");
+
+        this.dataWriter(writer, "\n"); // Spacer
+
+        /* Print Available Balance */
+        this.dataWriter(writer, "Available Balance : " + user.getAvailableBalance() + "\n");
+
+        this.dataWriter(writer, "\n");// Spacer
+
+        /* Print Investment Accounts */
+
+        if (user.getNumberOfAccounts() > 0) {
+            this.dataWriter(writer, "Investment Accounts for " + user.getName() + "\n");
+            for (int i = 0; i < user.getNumberOfAccounts(); i++) {
+                this.dataWriter(writer, "\n"); // Spacer
+                this.dataWriter(writer, "Account Number : " + (i + 1) + "\n");
+                this.userInvestmentDetailSavingMachine(writer, user.getInvestmentAccount(i));
+                this.dataWriter(writer, "\n"); // Spacer
+            }
+        } else {
+            this.dataWriter(writer, "No investment account found for the user: " + user.getName() + "\n");
+        }
+
+    }
+
+    /**
+     * Displays a message with the specified color.
+     *
      * @param message The message to display.
      * @param color   The color of the message.
      */
@@ -652,7 +725,7 @@ public class CgtInterface {
             Scanner console, String regex,
             String invalidMessage) {
         double value = -1; // Setting value to -1 to pass the minimum value check, also compiler check,
-                           // never set it to 0,
+        // never set it to 0,
         String input;
         do {
             System.out.print(prompt);
@@ -673,7 +746,7 @@ public class CgtInterface {
 
     /**
      * Prints all available user data in a formatted way.
-     * 
+     *
      * @param user The User object representing the user.
      */
     private void printUserData(User user) {
@@ -711,7 +784,7 @@ public class CgtInterface {
 
         System.out.println(); // Spacer
 
-        /* Print Avaliable Balance */
+        /* Print Available Balance */
         this.displayMessage("Available Balance : " + user.getAvailableBalance(), "yellow");
 
         System.out.println(); // Spacer
@@ -735,7 +808,7 @@ public class CgtInterface {
     /**
      * Prints a row in a table format. In this case, it prints the year, yearly
      * profit, and total profit.
-     * 
+     *
      * @param num1 The integer value for the first column.
      * @param num2 The double value for the second column.
      * @param num3 The double value for the third column.
@@ -744,6 +817,31 @@ public class CgtInterface {
         System.out.printf("%-8d|$%-21.2f|$%-14.2f\n", num1, num2, num3);
     }
 
+    /**
+     * Prints a row in a table format. In this case, it prints the year, yearly
+     * profit, and total profit.
+     *
+     * @param writer The FileWriter object used to write to the file.
+     * @param num1   The integer value for the first column.
+     * @param num2   The double value for the second column.
+     * @param num3   The double value for the third column.
+     */
+    private void writeTableRow(FileWriter writer, int num1, double num2, double num3) {
+
+        // This function is used to write the table row in a file.
+        try {
+            writer.write(String.format("%-8d|$%-21.2f|$%-14.2f\n", num1, num2, num3));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Retrieves the name of the selected cryptocurrency based on user's choice.
+     *
+     * @param investment The Investment object representing the user's investment.
+     * @return The name of the selected cryptocurrency.
+     */
     private String getSelectedCoinName(Investment investment) {
         return switch (investment.getCoinSelection()) {
             case 1 -> "BestCoin";
@@ -760,7 +858,7 @@ public class CgtInterface {
      * initial
      * investment amount, subsequent deposits, and the cryptocurrency to invest in.
      * The method validates the user input and returns the Investment object.
-     * 
+     *
      * @param availableAmount The available balance for the user to invest.
      * @return The Investment object created with the user input.
      */
@@ -836,7 +934,7 @@ public class CgtInterface {
      * Artificial delay to make the program more interactive.
      * I tried with different delay times and found that
      * 1337 milliseconds is an ideal delay time.
-     * 
+     *
      * @param delay The delay time in milliseconds.
      */
     private void addDelay(int delay) {
@@ -962,6 +1060,7 @@ public class CgtInterface {
      *
      * @param args The command-line arguments (not used in this program).
      */
+
     public static void main(String[] args) {
         CgtInterface calc = new CgtInterface(true);
         calc.run();
