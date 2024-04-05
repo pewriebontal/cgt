@@ -67,7 +67,7 @@ public class User {
     private double cgt;
     private double actualProfit;
 
-    private double availableBalance;
+    private double availableBalance; // after deducting investmented amounts
 
     private final Investment[] investmentAccount;
     private int numberOfAccounts;
@@ -92,7 +92,7 @@ public class User {
      *
      * @param inputName         the name of the user
      * @param inputSalary       the annual salary of the user
-     * @param inputResident     the residency status of the user
+     * @param inputResident     boolen value for the residency status of the user
      * @param inputBuyingPrice  the buying price of the investment
      * @param inputSellingPrice the selling price of the investment
      * @param inputYearHold     the number of years the user holds the investment
@@ -261,7 +261,7 @@ public class User {
     /**
      * Gets the investment account at the specified index.
      * 
-     * @param index The index of the investment account.
+     * @param index The index of the investment account. (1 or 2)
      * @return The investment account at the specified index.
      */
     public Investment getInvestmentAccount(int index) {
@@ -283,6 +283,7 @@ public class User {
      * Gets the deposit for a specific year from the investment.
      *
      * @param year The year for which deposit is retrieved.
+     * @param ivIndex The index of the investment account. (1 or 2)
      * @return The deposit for the specified year.
      */
     public double getDeposit(int year, int ivIndex) {
@@ -294,6 +295,7 @@ public class User {
      *
      * @param inputDeposit The deposit amount to set.
      * @param year         The year for which the deposit is set.
+     * @param ivIndex      The index of the investment account. (1 or 2)
      */
     public void setDeposit(double inputDeposit, int year, int ivIndex) {
         this.investmentAccount[ivIndex].setDeposit(inputDeposit, year);
@@ -302,6 +304,7 @@ public class User {
     /**
      * Gets the selected coin for future investment.
      *
+     * @param ivIndex The index of the investment account. (1 or 2)
      * @return The selected coin for future investment.
      */
     public int getInvestCoinSelection(int ivIndex) {
@@ -312,6 +315,7 @@ public class User {
      * Sets the selected coin for future investment.
      *
      * @param inputCoin The selected coin for future investment.
+     * @param ivIndex   The index of the investment account. (1 or 2)
      */
     public void setInvestCoinSelection(int inputCoin, int ivIndex) {
         this.investmentAccount[ivIndex].setCoinSelection(inputCoin);
@@ -321,6 +325,7 @@ public class User {
      * Gets the predicted yearly profit for a specific year from the investment.
      *
      * @param year The year for which the predicted yearly profit is retrieved.
+     * @param ivIndex The index of the investment account. (1 or 2)
      * @return The predicted yearly profit for the specified year.
      */
     public double getYearlyProfit(int year, int ivIndex) {
@@ -331,6 +336,7 @@ public class User {
      * Gets the predicted total profit for a specific year from the investment.
      *
      * @param year The year for which the total profit is retrieved.
+     * @param ivIndex The index of the investment account. (1 or 2)
      * @return The predicted total profit for the specified year.
      */
     public double getTotalProfit(int year, int ivIndex) {
@@ -348,7 +354,6 @@ public class User {
         if (numberOfAccounts < 2) {
             this.investmentAccount[numberOfAccounts] = newInvestment;
             this.availableBalance = availableBalance - investmentAccount[numberOfAccounts].getDeposit(1);
-            System.out.println("DEBUG:" + investmentAccount[numberOfAccounts].getDeposit(1));
             this.numberOfAccounts++;
         } else {
             System.out.println("Maximum number of investment accounts reached.");
@@ -358,7 +363,7 @@ public class User {
     /**
      * Deletes an investment account from the user.
      * 
-     * @param ivIndex The index of the investment account to delete.
+     * @param ivIndex The index of the investment account to delete. (1 or 2)
      * @return 0 if the account is deleted successfully, -1 if the account is not
      *         found.
      */
@@ -370,12 +375,15 @@ public class User {
             this.numberOfAccounts--;
             return 0;
         } else {
-            return -1;
+            return -1; // account not found
         }
     }
 
     /**
      * Calculates the capital gains tax (CGT) based on user's financial information.
+     * It should be called after setting the user's financial information.
+     * 
+     * In this program, it's called everytime MainMenu is displayed.
      */
     public void calculateCgt() {
 
@@ -438,13 +446,14 @@ public class User {
         this.cgt = taxRate * profitForCGT;
         this.actualProfit = profitForCGT - cgt;
 
+        // no need to worry about this line
+        // real balance is calcutated in different method
         this.availableBalance = actualProfit;
     }
 
     /**
-     * Calculates the predicted profits for the investment based on the selected
-     * coin
-     * and deposits.
+     * Calculates the predicted profits for each investment accounts based on the
+     * selected coin and deposits.
      */
     public void calculateInvestment() {
         for (int i = 0; i < numberOfAccounts; i++) {
@@ -454,6 +463,8 @@ public class User {
 
     /**
      * Calculates the available balance after deducting investmented amounts.
+     * It should be called after calculating the investment profits.
+     * In this program, it's called everytime MainMenu is displayed.
      */
     public void calculateAvailableBalance() {
         double investedAmmount = 0;

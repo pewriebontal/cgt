@@ -1,6 +1,6 @@
 /*
  *   Author: Min Thu Khaing, Thet Paing Hmu
- *   Date: 29-03-2024
+ *   Date: 05-04-2024
  *   Description: Investment Class represents an investment that the user plans to make over three years.
  *   GitHub: @pewriebontal, @LinVulpes
  * 	 © 2024 Min Thu Khaing, Thet Paing Hmu. All rights reserved.
@@ -197,6 +197,9 @@ public class Investment {
 	/**
 	 * Calculates the predicted profits for the investment based on the selected
 	 * coin and deposits.
+	 * 
+	 * It should be called after setting the deposits and selected coin.
+	 * In this program, it's called everytime MainMenu is displayed.
 	 */
 	public void calculateInvestmentProfits() {
 		/*

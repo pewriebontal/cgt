@@ -1,6 +1,6 @@
 /*
  *   Author: Min Thu Khaing, Thet Paing Hmu
- *   Date: 21-02-2024
+ *   Date: 05-04-2024
  *   Description: Main entry point for CGT calculation program. I know our code looks like haiku.
  *   GitHub: @pewriebontal, @LinVulpes
  * 	 © 2024 Min Thu Khaing, Thet Paing Hmu. All rights reserved.
@@ -35,7 +35,11 @@
 /*
  * Dear Sir,
  *
- *      Feel our over-engineered code for capital gains tax calculator.
+ *      Feel our over-engineered code for capital gains tax calculator. 
+ *  
+ * // Updated comment: 
+ *  // Now I feel like I did create a mess.
+ *  We are sorry for the mess we created.
  *
  *  Sincerely,
  *  Min Thu Khaing, Thet Paing Hmu
@@ -45,9 +49,15 @@
  * This comment goes to God or whatever/whoever created us...
  * I really hate object-oriented programming.
  * The actual Calculation is only two lines or something and then
- * the rest of the code filled with getter, setter, encapsulation and all that oop shits.
+ * the rest of the code filled with getter, setter, encapsulation and all that oop stuffs.
  *                                  commented by @pewriebontal on 05-02-2024.
  */
+
+/*
+ * When I was doing Part 1, me, my partner and god knows what we were doing.
+ * Now, God only knows.
+ */
+
 package net.bontal.cgt;
 
 import java.io.*;
@@ -78,7 +88,11 @@ import java.util.*;
  */
 public class CgtInterface {
 
-    static Scanner console;
+    // VERY IMPORTANT: PLEASE USE JAVA 11 OR HIGHER TO RUN THIS PROGRAM.
+    // TESTED ON JAVA 21.
+    // TODO: ADDED TO GIVE NOTIFICATION TO SHOW THIS MESSAGE.
+
+    private static Scanner console;
     private final User[] users;
     private int userCount;
 
@@ -101,7 +115,7 @@ public class CgtInterface {
      * for testing purposes.
      *
      * @param devBuild A boolean value to determine if the program is in development
-     *                 mode.
+     *                 mode. should not be included in final submission.
      */
     public CgtInterface(boolean devBuild) {
         this.users = new User[5];
@@ -130,7 +144,11 @@ public class CgtInterface {
     /* ========== Constructor Ends ============== */
 
     /* ========== Main Menu Functions Starts ============== */
+    // these functions are like proxy functions to call the actual functions.
 
+    /**
+     * 
+     */
     private void mainMenuAddUser() {
         String name;
         double salary;
@@ -160,7 +178,7 @@ public class CgtInterface {
 
         // check if user already exists
         for (int i = 0; i < userCount; i++) {
-            if (users[i].getName().equals(name)) {
+            if (users[i].getName().equalsIgnoreCase(name)) {
                 this.displayMessage("ERROR: User already exists", "red");
                 this.addDelay(1377);
                 this.pressAnyKeyToContinue();
@@ -195,6 +213,9 @@ public class CgtInterface {
         this.pressAnyKeyToContinue();
     }
 
+    /**
+     * 
+     */
     private void MainMenuDeleteUser() {
         User user;
         user = null;
@@ -215,6 +236,9 @@ public class CgtInterface {
         }
     }
 
+    /**
+     * 
+     */
     private void mainMenuDisplayUser() {
         User user;
         user = null;
@@ -234,11 +258,17 @@ public class CgtInterface {
         }
     }
 
+    /**
+     * 
+     */
     private void mainMenuDisplayAllUsers() {
         this.functionDisplayAllUsers();
         this.pressAnyKeyToContinue();
     }
 
+    /**
+     * 
+     */
     private void mainMenuAddInvestment() {
         User user;
 
@@ -271,6 +301,9 @@ public class CgtInterface {
         }
     }
 
+    /**
+     * 
+     */
     private void mainMenuDisplayInvestment() {
         User user;
 
@@ -307,6 +340,9 @@ public class CgtInterface {
 
     }
 
+    /**
+     * 
+     */
     private void mainMenuDeleteInvestment() {
 
         User user;
@@ -341,6 +377,9 @@ public class CgtInterface {
 
     }
 
+    /**
+     * 
+     */
     private void mainMenuSaveToFile() {
         String filename;
         filename = this.getValidatedInput("Enter filename to save without extension name: ", console, false,
@@ -353,6 +392,9 @@ public class CgtInterface {
         this.pressAnyKeyToContinue();
     }
 
+    /**
+     * 
+     */
     private void mainMenuExitProgram() {
         this.displayMessage("👋 Exiting Program...", "red");
         this.addDelay(1337);
@@ -362,6 +404,9 @@ public class CgtInterface {
     /* ========== Main Menu Functions Ends ============== */
 
     /* ========== Level 1 Helper Functions Starts ============== */
+
+    // These functions are the actual functions to perform the tasks.
+    // called by the main menu functions.
 
     // NOTE TO SELF : MAIN PROGRAM REQUREMENT NO.1
     private void functionAddUser(String name, double salary, boolean isResident, double buyingPrice,
@@ -379,6 +424,15 @@ public class CgtInterface {
     // WHILE LOOP IS CLEANER THAN FOR LOOP
     // AND EASIER TO READ AND UNDERSTAND
 
+    /**
+     * Deletes a user from the users array.
+     * If user is found, shift all the users to the left one by one.
+     * This will remove the user from the array.
+     * And reduce the user count by 1.
+     * 
+     * @param user The User object representing the user to delete.
+     * 
+     */
     private void functionDeleteUser(User user) {
         int i = 0;
         boolean userFound = false;
@@ -1015,27 +1069,35 @@ public class CgtInterface {
             switch (choice) {
                 case 1:
                     this.mainMenuAddUser();
+                    console.nextLine();
                     break;
                 case 2:
                     this.MainMenuDeleteUser();
+                    console.nextLine();
                     break;
                 case 3:
                     this.mainMenuDisplayUser();
+                    console.nextLine();
                     break;
                 case 4:
                     this.mainMenuDisplayAllUsers();
+                    console.nextLine();
                     break;
                 case 5:
                     this.mainMenuAddInvestment();
+                    console.nextLine();
                     break;
                 case 6:
                     this.mainMenuDisplayInvestment();
+                    console.nextLine();
                     break;
                 case 7:
                     this.mainMenuDeleteInvestment();
+                    console.nextLine();
                     break;
                 case 8:
                     this.mainMenuSaveToFile();
+                    console.nextLine();
                     break;
                 case 9:
                     this.mainMenuExitProgram();
